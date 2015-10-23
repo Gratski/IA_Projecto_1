@@ -15,13 +15,9 @@ pacmans-own  [ new-heading scared home-x home-y name]
 
 globals [
   score         ;; your score
-
-
-  action-pacman
-
-
-  id-left-team
-  id-right-team
+ 
+  left-team-file
+  right-team-file
 
   pastilhas-esquerda
   pastilhas-direita
@@ -30,28 +26,27 @@ globals [
   right-color
 
   clock-fino
+  
+  winner
 ]
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;             GRUPO 13                  ;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to initialize-prolog
   ; We initialize Prolog by sending a query to load a .PL file
   ; (see info tab for the prolog code)
   ; (see extension doc for the meaning of netprologo:run-query)
-  if not netprologo:run-query  (trans (word "consult('" pathdir:get-current pathdir:get-separator left-team "')")  ) ;;;; unix e windows path problems
+  if not netprologo:run-query  (trans (word "consult('" pathdir:get-current pathdir:get-separator left-team-file "')")  ) ;;;; unix e windows path problems
  
 
   [
-    user-message word "Error loading prolog file " left-team
+    user-message word "Error loading prolog file " left-team-file
   ]
-    if not netprologo:run-query (trans (word "consult('" pathdir:get-current pathdir:get-separator right-team "')")  ) ;;;; unix e windows path problems
+    if not netprologo:run-query (trans (word "consult('" pathdir:get-current pathdir:get-separator right-team-file "')")  ) ;;;; unix e windows path problems
  
   [
-    user-message word "Error loading prolog file " right-team
+    user-message word "Error loading prolog file " right-team-file
   ]
 end
 
@@ -156,13 +151,12 @@ end
 
 to-report my-team
   ifelse color = left-color
-    [report id-left-team]
-    [report id-right-team]
+    [report left-team]
+    [report right-team]
 end
 
 to-report my-base
    report (word "(" home-x "," home-y ")") 
-
 end
 
 to-report his-base
@@ -257,27 +251,42 @@ to new  ;; Observer Button
 
 
   load-map
-  random-seed new-seed
-  reset-ticks
-  set score 0
-  
-  ask pacmans [set scared 0]
-
-  set action-pacman 0
-  setup-zona  
-  ;;NOSSO CODIGO
-  initialize-prolog  ;;; initialize Prolog in the beginning only...
-
-
-  set id-left-team read-from-string remove ".pl" remove "teampac" left-team
-  
-  set id-right-team read-from-string remove ".pl" remove "teampac" right-team 
-  
-  set left-color red
-  set right-color 95  
+ 
 
 
  end
+
+to new-game
+    ;;NOSSO CODIGO
+  
+
+; set id-left-team read-from-string remove ".pl" remove "teampac" left-team
+  
+;  set id-right-team read-from-string remove ".pl" remove "teampac" right-team 
+  
+  set left-team-file (word "teampac" left-team ".pl")
+
+  set right-team-file (word "teampac" right-team ".pl")
+  
+  initialize-prolog  ;;; initialize Prolog in the beginning only...
+  
+  ask pacmans [setxy home-x home-y set scared 0 set shape "ghost"]
+
+  ask pellets [show-turtle]
+  
+  set score 0
+  set clock-fino 0
+  reset-ticks
+  
+   random-seed new-seed
+ 
+  set left-color red
+  set right-color 95  
+  
+  set pastilhas-esquerda count pellets with [color = left-color]
+  set pastilhas-direita count pellets with [color = right-color]
+  set winner ""
+end
 
 to desloca
   foreach [0 1 2 3 4 5 6 7 8 9] 
@@ -294,10 +303,6 @@ end
 
 
 
-to setup-zona
- 
-  end
-
 ;;;
 ;;; load the map correspondant to the level
 ;;;
@@ -313,7 +318,7 @@ to load-map  ;; Observer Procedure
    import-world item 0 maps
    set score 0
   
-   ask pacmans [set home-x xcor set home-y ycor]
+
 
 end
 
@@ -344,8 +349,9 @@ end
 ;;; Faz  or report da vitoria
 ;;
 to report-vitoria
-  show "O vencedor é "
-  show vencedor
+  ifelse score = 0 
+    [set winner"DRAW"]
+    [set winner vencedor]
 end
 
 
@@ -353,10 +359,9 @@ end
 ;;
 to-report vencedor
   if pastilhas-esquerda < pastilhas-direita
-    [report id-right-team]
+    [report right-team]
   if pastilhas-esquerda > pastilhas-direita
-    [report id-left-team]
-  report "Empate!" 
+    [report left-team]
 end
 
 
@@ -369,11 +374,7 @@ to play  ;; Observer Forever Button
   tick
  
   move-pacman
- ; ifelse pacman-killed? 
- ;   [display wait 1 death-behavior]
- ;   [play-ghosts
- ;    ask pacman 0 [consume-ghosts] 
- ;    if pacman-killed? [display wait 1 death-behavior]]
+
   display
 end
 
@@ -382,7 +383,7 @@ end
 ;;; O pacman move-se
 ;;;
 to move-pacman  ;; Observer Procedure
-  ;zigzag   ;;; 
+
   ask pacmans
   [ ;; move forward unless blocked by wall
     set clock-fino clock-fino + 1          ;; the asyncronous clock
@@ -410,7 +411,8 @@ end
 to action-effects
   ifelse my-territory?
     [ifelse scared > 0
-      [set shape "scared"]
+      [set shape "scared"
+       behave-scared-ghost]
       [set shape "ghost"
        behave-non-scared-ghost]]
     [ifelse shape = "pacman"   
@@ -423,16 +425,19 @@ end
 
 ;;
 ;; behave as a pacman
+;; if pacman in the same cell with a scared and a non-scared ghost
+;; the sacred one will go into the base and pacman also into his base
 ;;
 to behave-pacman
-      if any? pellets-here 
-      [ if [powerup?] of one-of pellets-here
+      if any? pacmans-here with [color != [color] of myself and scared = 0];; the scared are already in the base
+            [go-to-base stop]
+      if any? pellets-here with [not hidden?]
+      [ if [powerup?] of one-of pellets-here with [not hidden?]
          [ his-ghosts-are-scared]
-         ask pellets-here [ die ]
+         ask pellets-here [ hide-turtle ]
          update-score]
         ask pacmans-here with [color != [color] of myself and scared > 0] 
-             [go-to-base
-              set scared 0]
+             [go-to-base]       
 end
 
 
@@ -482,6 +487,8 @@ end
 ;;
 to go-to-base
   setxy home-x home-y
+  set shape "ghost"
+  set scared 0
 end
 
 
@@ -527,10 +534,10 @@ ticks
 30.0
 
 MONITOR
-11
-41
-121
-86
+28
+203
+138
+248
 Score
 score
 0
@@ -538,11 +545,11 @@ score
 11
 
 BUTTON
-11
-90
-121
-123
-New
+14
+14
+124
+47
+Load-Maze
 new
 NIL
 1
@@ -555,10 +562,10 @@ NIL
 1
 
 BUTTON
-121
-90
-231
-123
+120
+93
+230
+126
 Play
 play
 T
@@ -572,10 +579,10 @@ NIL
 1
 
 BUTTON
-62
-173
-160
-206
+18
+93
+116
+126
 NIL
 play\n
 NIL
@@ -589,10 +596,10 @@ NIL
 1
 
 SLIDER
-25
-133
-198
-166
+28
+53
+201
+86
 level-limit
 level-limit
 0
@@ -604,65 +611,95 @@ NIL
 HORIZONTAL
 
 SWITCH
-39
-214
-187
-247
+42
+134
+190
+167
 show-prolog?
 show-prolog?
-0
+1
 1
 -1000
 
-CHOOSER
-49
-265
-207
-310
-left-team
-left-team
-"teampac0.pl"
-0
-
-CHOOSER
-43
-330
-229
-375
-right-team
-right-team
-"teampac1000.pl"
-0
-
 MONITOR
-140
-405
-220
-450
-pastilhas-dir
+133
+404
+225
+449
+right-pastilhas
 pastilhas-direita
 0
 1
 11
 
 MONITOR
-39
-404
-125
-449
-pastilhas-esq
+32
+403
+118
+448
+left-pastilhas
 pastilhas-esquerda
 0
 1
 11
 
 MONITOR
-125
-42
-190
-87
+142
+204
+207
+249
 NIL
 clock-fino
+0
+1
+11
+
+INPUTBOX
+23
+338
+117
+398
+left-team
+0
+1
+0
+Number
+
+INPUTBOX
+122
+338
+219
+398
+right-team
+1000
+1
+0
+Number
+
+BUTTON
+128
+13
+217
+46
+NIL
+new-game
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+33
+248
+119
+293
+The winner is
+Winner
 0
 1
 11
@@ -1129,7 +1166,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.1.0
 @#$#@#$#@
 new
 @#$#@#$#@
