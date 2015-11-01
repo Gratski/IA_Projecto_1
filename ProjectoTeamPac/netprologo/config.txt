@@ -1,0 +1,1 @@
+/opt/local/lib/swipl-5.10.4/lib/i386-darwin10.7.0/
