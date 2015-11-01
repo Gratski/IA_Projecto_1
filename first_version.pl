@@ -2,11 +2,33 @@
 sucs( Cur, Free, Sucs ):-
 	findall( Suc , ( viz( _, Cur, Suc ), member( Suc, Free ) ), Sucs).
 
+%calcula distancia de manhatan
+manhatan( (X1, Y1), (X2, Y2), Dist ):-
+	DistX is X1 - X2, abs(DistX, AbsX),
+	DistY is Y1 - Y2, abs(DistY, AbsY),
+	Dist is AbsX + AbsY.
+
 %calcular distancia de manhatan de n posicoes até um destino
-calcDistAll( Objectivo, [], Acc, Acc ).
+calcDistAll( _, [], Acc, Acc ).
 calcDistAll( Objectivo, [ Cur | R ], Acc, Res ):-
-	manhatan( Cur, Objectivo, M ),
+	manhatan( Cur, Objectivo, D ),
+	M = (D, Cur),
 	calcDistAll( Objectivo, R, [ M | Acc ], Res ).
+
+%SORT
+sort_by_custo( [], Res, Res ).
+sort_by_custo( [ ( D, (X, Y) ) | R ], L, Res ):-
+		insert_ordered( ( D, (X, Y) ), L, NL ),
+		sort_by_custo( R, NL, Res ).
+%INSERT_AUX_DE_SORT
+insert_ordered( (Dist, (X, Y)), [], [(Dist, (X, Y))] ).
+insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
+	( Dist < Dist2 ; Dist == Dist2 ),
+	L = [ (Dist, (X, Y)), (Dist2, (X2, Y2)) | R ].
+insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
+	Dist > Dist2,
+	insert_ordered( (Dist, (X, Y)), R, NL ),
+	L = [ (Dist2, (X2, Y2)) | NL ].
 
 %criar sub arvores
 appendAll( [], _, Acc, Acc ).
@@ -14,12 +36,13 @@ appendAll( [ Cur | R ], Tree, Acc, Res ):-
 	append(Cur, Tree, SubTree),
 	appendAll( R, Tree, [ SubTree | Acc ], Res ).
 
-%obtem direcoes
+
+%obtem proxima direcao
 %caso base
-get_dir( pastilhas, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ], Free, Gums, Dec ):-
+get_dir( pastilhas, (PacX, PacY), _, [ [ (D, (X, Y)) | IR ] | _ ], _, Gums, Dec ):-
 	member( (X, Y), Gums ),
-	reverse( [ (D, (X, Y)) | IR ], [ (_ ,( HeadX, HeadY )) | R ] ),
-	viz(Dec, (PacX, PacY), (X, Y)).
+	reverse( [ (D, (X, Y)) | IR ], [ (_ ,( HeadX, HeadY )) | _ ] ),
+	viz(Dec, (PacX, PacY), (HeadX, HeadY)).
 
 %explorer :P
 get_dir( pastilhas, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ], Free, Gums, Dec ):-
