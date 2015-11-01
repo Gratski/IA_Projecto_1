@@ -52,4 +52,18 @@ get_dir( pastilhas, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ],
 	appendAll( SortedL, [ (D, (X, Y)) | IR ], [], SubTree ),
 	get_dir( pastilhas, (PacX, PacY), ( ObjX, ObjY ), [ SubTree | OR ], Free, Gums, Dec ).
 
-	
+
+
+%pacman(Clock, ClockLimit, Score, Me, Partner, OtherTeam, HomeBase , HisBase, FreeCells, MyP, MYSupP, HisP, HisSupP, Decisao) :-
+
+pacman0(_,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+	calcDistAll( (PacX, PacY), Pastilhas, ListaDistPastilhas ),
+	sort_by_custo( ListaDistPastilhas, [], [ (Dist, ( ObjX, ObjY ) ) | R ] ),
+	get_dir( pastilhas, (PacX, PacY), (ObjX, ObjY), [[ (0, (PacX, PacY)) ]], Free, Pastilhas, Dec ).
+
+
+
+
+
+
+
