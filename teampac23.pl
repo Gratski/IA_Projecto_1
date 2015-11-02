@@ -6,7 +6,6 @@ pastilhas([]).
 
 
 
-
 final(pastilhas, (X, Y)):-
 	pastilhas(Pastilhas),
 	member((X, Y), Pastilhas).
