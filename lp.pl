@@ -15,3 +15,6 @@ get_dir( (PacX, PacY), (ObjX, ObjY), [ [ (X, Y) | IR ] | OR ], Free, Visitados, 
 
 get_dir( (PacX, PacY), (ObjX, ObjY), [ [ (X, Y) | IR ] | OR ], Free, Visitados, Gums, Dec )
 	
+
+
+	get_dir( (PacX, PacY), (ObjX, ObjY), [ [ (X, Y) | IR ] | OR ], Free, Visitados, Gums, Dec )

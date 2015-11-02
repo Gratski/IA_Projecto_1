@@ -23,11 +23,31 @@ get_best_dir( [ ],_, _, Direction ):-
 
 get_best_dir( [ [ ( X, Y ) | R] | RT ], _, Pastilhas, Direction ):-
 	member( (X, Y), Pastilhas ),
-	write("X: "), write(X), write(" Y: "), write(Y), nl,
+	write([(X, Y) | R]), nl,
 	Direction is 0.
 
 get_best_dir( [ [ ( X, Y ) | R] | RT ], Free, Gums, Direction ):-
-	findall( Viz, ( viz( D, ( X, Y ), Viz), \+member( Viz, [ ( X, Y ) | R ] ) , member( Viz, Free ) ), L),
+	findall( Viz, ( viz( D, ( X, Y ), Viz), member( Viz, Free ), \+member( Viz, [ ( X, Y ) | R ] ) ), L),
+	apply_heuristic( L, Gums, H ),
 	insert_all( L, [ (X, Y) | R ], [], NL ),
 	append( NL, RT, NNL ),
 	get_best_dir( NNL, Free, Gums, Direction ).
+
+
+apply_heuristic( [P | R], Gums,  )
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% get_best_dir( [[(1,1)]], [ (0,0), (0,1), (0,2), (0,3), (1,0), (1,1), (1,2), (1,3), (2,0), (2,1), (2,2), (2,3), (3,0), (3,1), (3,2), (3,3) ], [(1,2)], D ).
+
+
+% vizinhos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+viz(0,(X,Y),(X,NY)) :-
+	NY is Y + 1.
+viz(180,(X,Y),(X,NY)) :-
+	NY is Y - 1.
+viz(90,(X,Y),(NX,Y)) :-
+	NX is X + 1.
+viz(270,(X,Y),(NX,Y)) :-
+	NX is X - 1.
