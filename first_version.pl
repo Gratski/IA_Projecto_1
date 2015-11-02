@@ -64,6 +64,3 @@ pacman0(_,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec
 
 
 
-
-
-
