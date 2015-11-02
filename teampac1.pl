@@ -46,9 +46,13 @@ get_dir( pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | _ 
 	X =:= ObjX, Y =:= ObjY,
 	write(ObjX), write(' : '), write(ObjY), nl,
 	write('encontrou pastilha'), nl,
-	!.
-	%reverse( [ (D, (X, Y)) | IR ], [ (_ ,( Dii, HeadX, HeadY )) | _ ] ),
-	%viz(Dec, (PacX, PacY), (HeadX, HeadY)).
+	reverse( [ (D, (X, Y)) | IR ], [Prev, (K, Xx, Yy) | Rev] ),
+	write('fez reverse'), nl,
+	viz(Viz, (PacX, PacY), (Xx, Yy)),
+	write(Xx), write(' '), write(Yy), nl,
+	write('fez viz'), nl,
+	write([ (D, (X, Y)) | IR ]), nl, write(Rev), nl,
+	Dec is Viz.
 
 %explorer :P
 
@@ -72,12 +76,19 @@ get_dir( pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR
 
 %pacman(Clock, ClockLimit, Score, Me, Partner, OtherTeam, HomeBase , HisBase, FreeCells, MyP, MYSupP, HisP, HisSupP, Decisao) :-
 
-pacman0(_,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+pacman1(_,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
 	calcDistAll( (PacX, PacY), Pastilhas, ListaDistPastilhas ),
 	sort_by_custo( ListaDistPastilhas, [], [ (Dist, ( ObjX, ObjY ) ) | R ] ),
 	get_dir( pastilhas,0, (PacX, PacY), (ObjX, ObjY), [[ (0, (PacX, PacY)) ]], Free, Pastilhas, Dec ).
 
-
+viz(0,(X,Y),(X,NY)) :-
+	NY is Y + 1.
+viz(180,(X,Y),(X,NY)) :-
+	NY is Y - 1.
+viz(90,(X,Y),(NX,Y)) :-
+	NX is X + 1.
+viz(270,(X,Y),(NX,Y)) :-
+	NX is X - 1.
 
 
 %[(-8,6),(-5,7),(-5,2),(-7,9),(-8,-9),(-7,-3),(-4,-3),(-5,4),(-5,0),(-2,-7),(-4,7),(-7,7),(-4,9),(-3,-3),(-2,9),(-1,8),(-5,-7),(-5,-6),(-5,8),(-3,9),(-3,-6),(-5,-2),(-3,-9),(-5,-9),(-1,-3),(-2,-9),(-1,-4),(-5,-1),(-6,-7),(-2,5),(-8,9),(-8,-4),(-2,-3),(-5,6),(-1,9),(-5,9),(-5,-3),(-1,-8),(-8,5),(-4,-5),(-6,-3),(-5,-4),(-1,-5),(-3,-7),(-2,-5),(-7,5),(-1,7),(-8,-8),(-7,-9),(-3,7),(-8,7),(-6,7),(-6,-9),(-6,9),(-5,-5),(-8,-3),(-1,5),(-7,-7),(-2,7),(-1,-7),(-4,-9),(-3,6),(-1,-9),(-5,3),(-5,1),(-3,-5),(-5,5),(-6,5),(-8,-7),(-3,5),(-7,-6),(-7,-5)]

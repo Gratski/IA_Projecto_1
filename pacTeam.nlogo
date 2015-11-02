@@ -15,7 +15,11 @@ pacmans-own  [ new-heading scared home-x home-y name]
 
 globals [
   score         ;; your score
+
+
  
+
+
   left-team-file
   right-team-file
 
@@ -97,8 +101,8 @@ end
 ;;
 to-report my-pastilhas
   let my-pasti (word "[" "]")
-  if any? pellets with [not powerup? and color = [color] of myself]
-       [set my-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not powerup? and color = [color] of myself])) "]")]
+  if any? pellets with [not hidden? and not powerup? and color = [color] of myself]
+       [set my-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not hidden? and not powerup? and color = [color] of myself])) "]")]
    report my-pasti
 end
 
@@ -108,8 +112,8 @@ end
 ;;
 to-report my-super-pastilhas
   let my-super-pasti (word "[" "]")
-      if any? pellets with [powerup? and color = [color] of myself]
-       [set my-super-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [powerup? and color = [color] of myself])) "]")]
+      if any? pellets with [not hidden? and powerup? and color = [color] of myself]
+       [set my-super-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not hidden? and powerup? and color = [color] of myself])) "]")]
   report my-super-pasti
 end
 
@@ -119,8 +123,8 @@ end
 ;;
 to-report his-pastilhas
   let my-pasti (word "[" "]")
-  if any? pellets with [not powerup? and color != [color] of myself]
-       [set my-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not powerup? and color != [color] of myself])) "]")]
+  if any? pellets with [not hidden? and not powerup? and color != [color] of myself]
+       [set my-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not hidden? and not powerup? and color != [color] of myself])) "]")]
    report my-pasti
 end
 
@@ -129,8 +133,8 @@ end
 ;;
 to-report his-super-pastilhas
   let my-super-pasti (word "[" "]")
-      if any? pellets with [powerup? and color != [color] of myself]
-       [set my-super-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [powerup? and color != [color] of myself])) "]")]
+      if any? pellets with [not hidden? and powerup? and color != [color] of myself]
+       [set my-super-pasti (word "[" (butlast reduce word map xx ([list xcor ycor] of pellets with [not hidden? and powerup? and color != [color] of myself])) "]")]
   report my-super-pasti
 end
 
@@ -429,15 +433,16 @@ end
 ;; the sacred one will go into the base and pacman also into his base
 ;;
 to behave-pacman
-      if any? pacmans-here with [color != [color] of myself and scared = 0];; the scared are already in the base
-            [go-to-base stop]
+   if any? pacmans-here with [scared = 0 and color != [color] of myself ];; the scared are already in the base
+            [go-to-base]
       if any? pellets-here with [not hidden?]
       [ if [powerup?] of one-of pellets-here with [not hidden?]
          [ his-ghosts-are-scared]
          ask pellets-here [ hide-turtle ]
          update-score]
         ask pacmans-here with [color != [color] of myself and scared > 0] 
-             [go-to-base]       
+             [go-to-base]
+       
 end
 
 
@@ -534,10 +539,10 @@ ticks
 30.0
 
 MONITOR
-28
-203
-138
-248
+30
+322
+140
+367
 Score
 score
 0
@@ -622,10 +627,10 @@ show-prolog?
 -1000
 
 MONITOR
-133
-404
-225
-449
+128
+258
+220
+303
 right-pastilhas
 pastilhas-direita
 0
@@ -633,10 +638,10 @@ pastilhas-direita
 11
 
 MONITOR
-32
-403
-118
-448
+27
+257
+113
+302
 left-pastilhas
 pastilhas-esquerda
 0
@@ -644,10 +649,10 @@ pastilhas-esquerda
 11
 
 MONITOR
-142
-204
-207
-249
+144
+323
+209
+368
 NIL
 clock-fino
 0
@@ -655,10 +660,10 @@ clock-fino
 11
 
 INPUTBOX
-23
-338
-117
-398
+18
+192
+112
+252
 left-team
 0
 1
@@ -666,10 +671,10 @@ left-team
 Number
 
 INPUTBOX
-122
-338
-219
-398
+117
+192
+214
+252
 right-team
 1000
 1
@@ -694,10 +699,10 @@ NIL
 1
 
 MONITOR
-33
-248
-119
-293
+75
+377
+161
+422
 The winner is
 Winner
 0
@@ -1166,7 +1171,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 new
 @#$#@#$#@
