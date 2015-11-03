@@ -1,14 +1,14 @@
-%sucessores
+% 'sucessores'
 sucs( Cur, Free, CurTree, Sucs ):-
 	findall( Suc , ( viz( _, Cur, Suc ), member( Suc, Free ), \+member( (_, Suc), CurTree ) ), Sucs).
 
-%calcula distancia de manhatan
+% 'calcula distancia de manhatan'
 manhatan( (X1, Y1), (X2, Y2), Dist ):-
 	DistX is X1 - X2, abs(DistX, AbsX),
 	DistY is Y1 - Y2, abs(DistY, AbsY),
 	Dist is AbsX + AbsY.
 
-%calcular distancia de manhatan de n posicoes até um destino
+% 'calcular distancia de manhatan de n posicoes até um destino'
 calcDistAll( _, [], [] ).
 calcDistAll( Objectivo, [ Cur | R ], Res ):-
 	manhatan( Cur, Objectivo, D ),
@@ -16,12 +16,12 @@ calcDistAll( Objectivo, [ Cur | R ], Res ):-
 	calcDistAll( Objectivo, R, Res2 ),
 	Res = [M | Res2].
 
-%SORT
+% 'SORT'
 sort_by_custo( [], Res, Res ).
 sort_by_custo( [ ( D, (X, Y) ) | R ], L, Res ):-
 		insert_ordered( ( D, (X, Y) ), L, NL ),
 		sort_by_custo( R, NL, Res ).
-%INSERT_AUX_DE_SORT
+% 'INSERT_AUX_DE_SORT'
 insert_ordered( (Dist, (X, Y)), [], [(Dist, (X, Y))] ).
 insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
 	( Dist < Dist2 ; Dist == Dist2 ),
@@ -31,16 +31,16 @@ insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
 	insert_ordered( (Dist, (X, Y)), R, NL ),
 	L = [ (Dist2, (X2, Y2)) | NL ].
 
-%criar sub arvores
+% 'criar sub arvores'
 appendAll( [], _, Acc, Acc ).
 appendAll( [ Cur | R ], Tree, Acc, Res ):-
 	append([Cur], Tree, SubTree),
 	appendAll( R, Tree, [ SubTree | Acc ], Res ).
 
 
-%obtem proxima direcao
-%caso base
-%caso base
+%'obtem proxima direcao'
+%'caso base'
+%'caso base'
 get_dir( Id, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | _ ], _, Gums, Dec ):-
 	%write('Cucu'), nl,
 	%write(X), write(' : '), write(Y), nl,
@@ -70,8 +70,8 @@ get_dir( 0, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] |
 	%write('extra'), nl,
 	get_dir(Id, pastilhas,NewN, (PacX, PacY), ( ObjX, ObjY ), NL, Free, Gums, Dec ).
 
-%Pacman Id 0
-%Profundidade Primeiro	
+%'Pacman Id 0'
+%'Profundidade Primeiro	'
 get_dir( 1, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ], Free, Gums, Dec ):-
 	%write('aiai'), nl,
 	sucs( (X, Y), Free, [ (D, (X, Y)) | IR ], Sucs ),
