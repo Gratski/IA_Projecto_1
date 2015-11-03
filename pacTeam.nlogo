@@ -1,6 +1,6 @@
 extensions [ pathdir netprologo]
 
-turtles-own [  ] 
+turtles-own [  ]
 
 patches-own [ pellet-grid?  territorio]  ;; true/false: is a pellet here initially?
 
@@ -17,7 +17,7 @@ globals [
   score         ;; your score
 
 
- 
+
 
 
   left-team-file
@@ -25,12 +25,12 @@ globals [
 
   pastilhas-esquerda
   pastilhas-direita
-  
+
   left-color
   right-color
 
   clock-fino
-  
+
   winner
 ]
 
@@ -42,13 +42,13 @@ to initialize-prolog
   ; (see info tab for the prolog code)
   ; (see extension doc for the meaning of netprologo:run-query)
   if not netprologo:run-query  (trans (word "consult('" pathdir:get-current pathdir:get-separator left-team-file "')")  ) ;;;; unix e windows path problems
- 
+
 
   [
     user-message word "Error loading prolog file " left-team-file
   ]
     if not netprologo:run-query (trans (word "consult('" pathdir:get-current pathdir:get-separator right-team-file "')")  ) ;;;; unix e windows path problems
- 
+
   [
     user-message word "Error loading prolog file " right-team-file
   ]
@@ -146,7 +146,7 @@ to-report other-team
  ; show ag0
   let ag1 one-of pacmans with [(color != [color] of myself) and name != [name] of ag0]
  ; show ag1
-  report (word "[" 
+  report (word "["
                  "(" [name] of ag0 "," [xcor] of ag0 "," [ycor] of ag0 "," [heading] of ag0 "," [scared] of ag0 ")"
                ","
                  "(" [name] of ag1  "," [xcor] of ag1 "," [ycor] of ag1 "," [heading] of ag1 "," [scared] of ag1 ")"
@@ -160,12 +160,12 @@ to-report my-team
 end
 
 to-report my-base
-   report (word "(" home-x "," home-y ")") 
+   report (word "(" home-x "," home-y ")")
 end
 
 to-report his-base
   let ag0 one-of pacmans with [(color != [color] of myself)]
-  report (word "(" [home-x] of ag0 "," [home-y] of ag0 ")") 
+  report (word "(" [home-x] of ag0 "," [home-y] of ag0 ")")
 
 end
 
@@ -173,9 +173,9 @@ end
 ;;;  So' passa a posicao do pacman e dos fantasmas + as casas do labirinto navegaveis
 ;;;
 to zigzag-me
-  
+
       let prolog-query (build-function-call (list (word "pacman" my-team) ticks level-limit Score agent my-colleague other-team my-base his-base free-cells my-pastilhas my-super-pastilhas  his-pastilhas his-super-pastilhas "Decisao"))
-      
+
        if show-prolog?
         [ ;show "agent"
           ;show agent
@@ -189,18 +189,19 @@ to zigzag-me
           ;show my-super-pastilhas
           show prolog-query
 
-        ]   
+        ]
 
 ;let prolog-query (netprologo:build-prolog-call "knights(?1, X)" board-size)
-  ifelse not netprologo:run-query prolog-query  
-   [if show-prolog? [show "query failed"]] 
+  ifelse not netprologo:run-query prolog-query
+   [if show-prolog? [show "query failed"]]
   ; Second: take the first solution from the previous query
    [let rn netprologo:run-next
+     show "HHHHHHHHHHH"
     let out netprologo:dereference-var "Decisao"
     ;show out
-    set new-heading out] 
-    
-  
+    set new-heading out]
+
+
  ; ]
 
 end
@@ -215,7 +216,7 @@ to-report build-function-call [l]
 
   ; Build the list of arguments separated by commas
   let arg reduce [(word ?1 "," ?2)] (bf l)
-  
+
   ; report the resulting string
   report (word func "("arg ")")
 end
@@ -223,9 +224,9 @@ end
 
 
 to-report xx [l]
-  
+
   report (word "(" first l "," first butfirst l ")" ",")
- 
+
 end
 
 to-report xxx [l]
@@ -255,53 +256,53 @@ to new  ;; Observer Button
 
 
   load-map
- 
+
 
 
  end
 
 to new-game
     ;;NOSSO CODIGO
-  
+
 
 ; set id-left-team read-from-string remove ".pl" remove "teampac" left-team
-  
-;  set id-right-team read-from-string remove ".pl" remove "teampac" right-team 
-  
+
+;  set id-right-team read-from-string remove ".pl" remove "teampac" right-team
+
   set left-team-file (word "teampac" left-team ".pl")
 
   set right-team-file (word "teampac" right-team ".pl")
-  
+
   initialize-prolog  ;;; initialize Prolog in the beginning only...
-  
+
   ask pacmans [setxy home-x home-y set scared 0 set shape "ghost"]
 
   ask pellets [show-turtle]
-  
+
   set score 0
   set clock-fino 0
   reset-ticks
-  
+
    random-seed new-seed
- 
+
   set left-color red
-  set right-color 95  
-  
+  set right-color 95
+
   set pastilhas-esquerda count pellets with [color = left-color]
   set pastilhas-direita count pellets with [color = right-color]
   set winner ""
 end
 
 to desloca
-  foreach [0 1 2 3 4 5 6 7 8 9] 
+  foreach [0 1 2 3 4 5 6 7 8 9]
     [ask patches with [pxcor = ?] [set pcolor [pcolor] of patch (? + 1) pycor]]
-  ask pellets with [color = right-color] 
+  ask pellets with [color = right-color]
      [set xcor xcor - 1]
-     
+
 end
 
 to desloca-direita-1casa [x y ]
-  
+
   ask patch x y   [set pcolor  [pcolor] of patch (x + 1) y]
 end
 
@@ -311,17 +312,17 @@ end
 ;;; load the map correspondant to the level
 ;;;
 to load-map  ;; Observer Procedure
-  
+
   ;; Filenames of Level Files
-  let maps [;"pacmap1.csv"  
+  let maps [;"pacmap1.csv"
             "captureDiFlag.csv"]
 
 
- 
+
 ;  let current-difficulty difficulty
    import-world item 0 maps
    set score 0
-  
+
 
 
 end
@@ -353,7 +354,7 @@ end
 ;;; Faz  or report da vitoria
 ;;
 to report-vitoria
-  ifelse score = 0 
+  ifelse score = 0
     [set winner"DRAW"]
     [set winner vencedor]
 end
@@ -369,14 +370,14 @@ to-report vencedor
 end
 
 
-;;  
+;;
 ;;  one playing step
 ;;
 to play  ;; Observer Forever Button
   ;; Only true at this point if you died and are trying to continue
   if the-end? [report-vitoria stop]
   tick
- 
+
   move-pacman
 
   display
@@ -395,7 +396,7 @@ to move-pacman  ;; Observer Procedure
     display
     let old-heading heading
     ;set new-heading one-of [0 90 180 270]
-    
+
     zigzag-me  ; pacman choose heading (Prolog)
     set heading new-heading
     if [pcolor] of patch-ahead 1 != black
@@ -419,7 +420,7 @@ to action-effects
        behave-scared-ghost]
       [set shape "ghost"
        behave-non-scared-ghost]]
-    [ifelse shape = "pacman"   
+    [ifelse shape = "pacman"
  ;; Animation -opening and closing the mouth
       [ set shape "pacman open" ]
       [ set shape "pacman" ]
@@ -440,9 +441,9 @@ to behave-pacman
          [ his-ghosts-are-scared]
          ask pellets-here [ hide-turtle ]
          update-score]
-        ask pacmans-here with [color != [color] of myself and scared > 0] 
+        ask pacmans-here with [color != [color] of myself and scared > 0]
              [go-to-base]
-       
+
 end
 
 
@@ -665,7 +666,7 @@ INPUTBOX
 112
 252
 left-team
-0
+124
 1
 0
 Number
@@ -722,7 +723,7 @@ Finally, occasionally a bonus (rotating star) will appear in the maze.  This bon
 
 There are 5 levels in this Pacman, a different maze for each one and 2 levels of difficulty, one where the ghosts are slower than Pac-Man and another where they have the same speed.
 
-There os also a limit number of moves in each level so that the game does not last forever and in each time step Pac-Man looses 10 score units. 
+There os also a limit number of moves in each level so that the game does not last forever and in each time step Pac-Man looses 10 score units.
 
 ## HOW TO USE IT
 
@@ -779,7 +780,7 @@ Scoring System
 -- Eat a Power-Pellet: 500 Points
 -- Eat a Scared Ghost: 500 Points
 -- Eat a Bonus Star:   100-1000 Points (varies)
--- Each pacman move makes it loose score: 5 units. 
+-- Each pacman move makes it loose score: 5 units.
 
 ## THINGS TO DO
 
@@ -795,13 +796,13 @@ pacman(Time, LevelLim, Score, Level, Difficulty, Lives, PacManPos, PacManHead,  
 6. Lives: the number of lives to use.
 7. PacManPos: a list with xcor and ycor of pacman (xcor,ycor)
 8. PacManHead: the heading of pacman (0, 90, 180 or 270)
-9. Maze: a list with all the valid maze cells; a list of (x,y) 
+9. Maze: a list with all the valid maze cells; a list of (x,y)
 10. Ghosts: a list with all not eaten ghosts; a list of ghosts info given by ((x,y),eaten?)
 11. Scared: how much more time left where ghosts are scared, 0 means they are not scared
 12. Pellets: a list with all the pellets not eaten, each pellet is given by a list with the coordinates xcor and ycor: (xcor,ycor)
 13. PowerPellets: a list with all the PowerPellets, where each PowerPellet is given by (x,y)
 14. Bonus: a list of three element lists. Each Bonus is defined by a 3-tuple where the first is its position, and then its value and life time. Position is a pair (x,y). Something like ((x,y),value,countdown)
-15. OutParameter - NewHeading: should be one of {0, 90, 180, 270} 
+15. OutParameter - NewHeading: should be one of {0, 90, 180, 270}
 
 
 ## EXTENDING THE MODEL
@@ -1171,7 +1172,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1
 @#$#@#$#@
 new
 @#$#@#$#@
