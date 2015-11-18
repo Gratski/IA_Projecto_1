@@ -117,8 +117,9 @@ pacman11(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Past
 
 
 
-pacman11(_,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
-	calcDistAll( (PacX, PacY), Pastilhas, ListaDistPastilhas ),
+pacman11(_,_,_,(_,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+	concat_11( Pastilhas, MaxPastilhas, TodasPastilhas ),
+	applyHeuristic_11( (PacX, PacY), TodasPastilhas, Enemies, ListaDistPastilhas ),
 	sort_by_custo( ListaDistPastilhas, [], [ (Dist, ( ObjX, ObjY ) ) | R ] ),
 	get_dir( _,pastilhas,0, (PacX, PacY), (ObjX, ObjY), [[ (0, (PacX, PacY)) ]], Free, Pastilhas, Dec ).
 	
@@ -135,5 +136,56 @@ simetrico(0,0).
 simetrico(180,180).
 simetrico(90,270).
 simetrico(270,90).
+
+
+%%----------------------------------------------- Heuristic methods %
+applyHeuristic_11( Me, Goals, Enemies, Result):-
+	applyHeuristic_aux_11( Me, Goals, Goals, Enemies, Result).
+
+applyHeuristic_aux_11( _, [], _, _, []).
+applyHeuristic_aux_11( Me, [P|R], Goals, [Enemy1, Enemy2], Result):-
+	eval_danger( P, Enemy1, Danger_Factor_1 ), eval_danger( P, Enemy2, Danger_Factor_2 ),
+	eval_distance( Me, P, Distance_Factor ),
+	HeuristicValue is ( Distance_Factor + Danger_Factor_1 + Danger_Factor_2 ),
+	applyHeuristic_aux_11( Me, R, Goals, [Enemy1, Enemy2], Result_Rec ),
+	Result = [ ( HeuristicValue, P) | Result_Rec ].
+
+
+%%-------------- Avalia factor de perigo %
+eval_danger( Pos1, Pos2, Res ):-
+	manhatan( Pos1, Pos2, Calc ),
+	parse_danger_value(Calc, Res).
+
+%interpreta o valor de perigo
+parse_danger_value(Val, -1):-
+	Val >= 2.
+parse_danger_value(Val, 20):-
+	Val < 2.
+
+%%-------------- Avalia factor de distancia %
+eval_distance( Pos1, Pos2, Res):-
+	manhatan(Pos1, Pos2, Res).
+
+%%-------------- Avalia factor de vizinhança %
+%falta fazer
+
+
+
+%%----------------------------------------------- Aux Methods %
+%concatena duas listas	
+concat_11(L1, L2, Res):-
+	append(L1, L2, Res).
+
+%calcula distancia de manhatan
+manhatan( (X1, Y1), (X2, Y2), Dist ):-
+	DistX is X1 - X2, abs(DistX, AbsX),
+	DistY is Y1 - Y2, abs(DistY, AbsY),
+	Dist is AbsX + AbsY.
+
+
+
+
+
+
 
 %[(-8,6),(-5,7),(-5,2),(-7,9),(-8,-9),(-7,-3),(-4,-3),(-5,4),(-5,0),(-2,-7),(-4,7),(-7,7),(-4,9),(-3,-3),(-2,9),(-1,8),(-5,-7),(-5,-6),(-5,8),(-3,9),(-3,-6),(-5,-2),(-3,-9),(-5,-9),(-1,-3),(-2,-9),(-1,-4),(-5,-1),(-6,-7),(-2,5),(-8,9),(-8,-4),(-2,-3),(-5,6),(-1,9),(-5,9),(-5,-3),(-1,-8),(-8,5),(-4,-5),(-6,-3),(-5,-4),(-1,-5),(-3,-7),(-2,-5),(-7,5),(-1,7),(-8,-8),(-7,-9),(-3,7),(-8,7),(-6,7),(-6,-9),(-6,9),(-5,-5),(-8,-3),(-1,5),(-7,-7),(-2,7),(-1,-7),(-4,-9),(-3,6),(-1,-9),(-5,3),(-5,1),(-3,-5),(-5,5),(-6,5),(-8,-7),(-3,5),(-7,-6),(-7,-5)]
