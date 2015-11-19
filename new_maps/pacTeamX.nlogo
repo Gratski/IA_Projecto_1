@@ -41,13 +41,13 @@ to initialize-prolog
   ; We initialize Prolog by sending a query to load a .PL file
   ; (see info tab for the prolog code)
   ; (see extension doc for the meaning of netprologo:run-query)
-  if not netprologo:run-query  (trans (word "consult('" pathdir:get-current pathdir:get-separator left-team-file "')")  ) ;;;; unix e windows path problems
+  if not netprologo:run-query  (trans (word "reconsult('" pathdir:get-current pathdir:get-separator left-team-file "')")  ) ;;;; unix e windows path problems
  
 
   [
     user-message word "Error loading prolog file " left-team-file
   ]
-    if not netprologo:run-query (trans (word "consult('" pathdir:get-current pathdir:get-separator right-team-file "')")  ) ;;;; unix e windows path problems
+    if not netprologo:run-query (trans (word "reconsult('" pathdir:get-current pathdir:get-separator right-team-file "')")  ) ;;;; unix e windows path problems
  
   [
     user-message word "Error loading prolog file " right-team-file
@@ -196,6 +196,7 @@ to zigzag-me
    [if show-prolog? [show "query failed"]] 
   ; Second: take the first solution from the previous query
    [let rn netprologo:run-next
+     ;show "HHHHHHHHHHHHHHHHH"
     let out netprologo:dereference-var "Decisao"
     ;show out
     set new-heading out] 
@@ -256,7 +257,8 @@ to new  ;; Observer Button
 
   load-map
  
-
+  set pastilhas-esquerda count pellets with [color = left-color]
+  set pastilhas-direita count pellets with [color = right-color]
 
  end
 
@@ -274,7 +276,8 @@ to new-game
   
   initialize-prolog  ;;; initialize Prolog in the beginning only...
   
-  ask pacmans [setxy home-x home-y set scared 0 set shape "ghost"]
+  ask pacmans [setxy home-x home-y set scared 0 set shape "ghost"
+               ifelse color = red [set heading 90] [set heading 270]]
 
   ask pellets [show-turtle]
   
@@ -313,13 +316,12 @@ end
 to load-map  ;; Observer Procedure
   
   ;; Filenames of Level Files
-  let maps [;"pacmap1.csv"  
-            "captureDiFlag.csv"]
+  
 
 
  
 ;  let current-difficulty difficulty
-   import-world item 0 maps
+   import-world (word "captureDiFlag" labirinto ".csv")
    set score 0
   
 
@@ -433,7 +435,7 @@ end
 ;; the sacred one will go into the base and pacman also into his base
 ;;
 to behave-pacman
-   if any? pacmans-here with [color != [color] of myself ];; the scared are already in the base
+   if any? pacmans-here with [scared = 0 and color != [color] of myself ];; the scared are already in the base
             [go-to-base]
       if any? pellets-here with [not hidden?]
       [ if [powerup?] of one-of pellets-here with [not hidden?]
@@ -540,9 +542,9 @@ ticks
 
 MONITOR
 30
-322
+373
 140
-367
+418
 Score
 score
 0
@@ -568,9 +570,9 @@ NIL
 
 BUTTON
 120
-93
+144
 230
-126
+177
 Play
 play
 T
@@ -585,9 +587,9 @@ NIL
 
 BUTTON
 18
-93
+144
 116
-126
+177
 NIL
 play\n
 NIL
@@ -602,9 +604,9 @@ NIL
 
 SLIDER
 28
-53
+104
 201
-86
+137
 level-limit
 level-limit
 0
@@ -617,9 +619,9 @@ HORIZONTAL
 
 SWITCH
 42
-134
+185
 190
-167
+218
 show-prolog?
 show-prolog?
 1
@@ -628,9 +630,9 @@ show-prolog?
 
 MONITOR
 128
-258
+309
 220
-303
+354
 right-pastilhas
 pastilhas-direita
 0
@@ -639,9 +641,9 @@ pastilhas-direita
 
 MONITOR
 27
-257
+308
 113
-302
+353
 left-pastilhas
 pastilhas-esquerda
 0
@@ -650,9 +652,9 @@ pastilhas-esquerda
 
 MONITOR
 144
-323
+374
 209
-368
+419
 NIL
 clock-fino
 0
@@ -661,31 +663,31 @@ clock-fino
 
 INPUTBOX
 18
-192
+243
 112
-252
+303
 left-team
-0
+104
 1
 0
 Number
 
 INPUTBOX
 117
-192
+243
 214
-252
+303
 right-team
-1000
+1001
 1
 0
 Number
 
 BUTTON
-128
-13
-217
-46
+14
+54
+103
+87
 NIL
 new-game
 NIL
@@ -700,14 +702,25 @@ NIL
 
 MONITOR
 75
-377
+428
 161
-422
+473
 The winner is
 Winner
 0
 1
 11
+
+INPUTBOX
+140
+22
+218
+82
+Labirinto
+4
+1
+0
+Number
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1171,11 +1184,24 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 new
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment" repetitions="500" runMetricsEveryStep="false">
+    <setup>new-game</setup>
+    <go>play</go>
+    <metric>winner</metric>
+    <enumeratedValueSet variable="left-team">
+      <value value="1004"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="right-team">
+      <value value="104"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
