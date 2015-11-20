@@ -11,20 +11,20 @@ aStar_11( Inicial, Goal, Free, Sol ):-
 aStar_aux_11( _, Goal, _, [ [ _, C, (X, Y) | CurTree ] | _ ] ,_, _, Sol ):-
 	manhatan((X, Y), Goal, Dist),
 	Dist == 0,
-	write('Custo '), write(C), nl,
+	%write('Custo '), write(C), nl,
 	reverse( [(X, Y) | CurTree], Sol ).
 
 aStar_aux_11( Inicial, Goal, Free, [ [ _, C, (X, Y) | CurTree ] | UpTree ] ,Visitados, Iteracao, Sol ):-
 	sucs( (X, Y), Free, CurTree, Sucs ),
 	Custo is (C + 1),
 	applyHeuristic( Custo, Sucs, Goal, GenList ),
-	write(GenList), write(' '), nl,
+	%write(GenList), write(' '), nl,
 	append_all( GenList, [(X, Y) | CurTree], HeurList),
-	write('GenList'), nl,
-	write(HeurList), write(' '), nl,
+	%write('GenList'), nl,
+	%write(HeurList), write(' '), nl,
 	append(UpTree, HeurList, FinalList),
-	write('FinaList'), nl,
-	write(FinalList), nl,
+	%write('FinaList'), nl,
+	%write(FinalList), nl,
 	setof( [ H | T ], ( T^member( [H | T], FinalList ) ), Sorted ),
 	aStar_aux_11( Inicial, Goal, Free, Sorted, Visitados, Iteracao, Sol ).
 	%append_all( Pre, CurTree, GeneratedTree ),
@@ -44,14 +44,6 @@ applyHeuristic( Custo, [ (X, Y) | R ], Goal, Res ):-
 	Heuristic is (Dist + Custo),
 	applyHeuristic( Custo, R, Goal, Rec ),
 	Res = [ (Heuristic, Custo, (X, Y)) | Rec ].
-
-
-calcDistAll( _, [], [] ).
-calcDistAll( Objectivo, [ Cur | R ], Res ):-
-	manhatan( Cur, Objectivo, D ),
-	M = (D, Cur),
-	calcDistAll( Objectivo, R, Res2 ),
-	Res = [M | Res2].
 
 
 sucs( Cur, Free, CurTree, Sucs ):-
