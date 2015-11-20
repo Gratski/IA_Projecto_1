@@ -71,6 +71,48 @@ manhatan( (X1, Y1), (X2, Y2), Dist ):-
 	DistY is Y1 - Y2, abs(DistY, AbsY),
 	Dist is AbsX + AbsY.
 
-
 concat_11(L1, L2, Res):-
 	append(L1, L2, Res).
+
+
+%--update nos visitados
+update_visitados( [], Visitados, Visitados ).
+update_visitados( [ (H, _, (X, Y)) | R ], Visitados, Res ):-
+	member( (Hv, (X, Y)), Visitados ), Hv > H,
+	replace_visitado( (H, (X, Y)), Visitados, [], NewVisitados ),
+	write('Aqui 1'), nl,
+	write(NewVisitados), nl,
+	update_visitados( R, NewVisitados, Res ).
+
+update_visitados( [ (H, _, (X, Y)) | R ], Visitados, Res ):-
+	member( (Hv, (X, Y)), Visitados ), ( Hv < H ; Hv == H ),
+	write('Aqui 2'), nl,
+	update_visitados( R, Visitados, Res ).
+
+update_visitados( [ (H, _, (X, Y)) | R ], Visitados, Res ):-
+	\+member( (_, (X, Y)), Visitados ),
+	append( ( H, (X, Y) ), Visitados, NewVisitados ),
+	write('Aqui 3'), nl,
+	update_visitados( R, NewVisitados, Res ).
+
+replace_visitado( (H, (X, Y)), [ (Hv, (Xv, Yv)) | R ], Acc, Res ):-
+	X == Xv, Y == Yv,
+	H < Hv,
+	append( [(H, (X, Y))], Acc, NewAcc ),
+	Res = [ NewAcc | R ].
+replace_visitado( (H, (X, Y)), [ (Hv, (Xv, Yv)) | R ], Acc, Res ):-
+	(X \= Xv ; Y \= Yv),
+	append( [(Hv, (Xv, Yv))], Acc, NewAcc ),
+	replace_visitado( (H, (X, Y)), R, NewAcc, Res ).
+
+%--update sucessores de acordo com visitados
+update_sucs( [], _, Acc, Acc ).
+update_sucs( [ (H, C, (X, Y)) | R ], Visitados, Acc, Res ):-
+	( \+member( (_, (X, Y)), Visitados ) ; ( member( (Hv, (X, Y)), Visitados ), ( H < Hv ; H == Hv ) ) ),
+	append( [(H, C, (X, Y))], Acc, NewAcc ),
+	update_sucs(R, Visitados, NewAcc, Res).
+update_sucs( [ (H, _, (X, Y)) | R ], Visitados, Acc, Res ):-
+	member( (Hv, (X, Y)), Visitados ), H > Hv,
+	update_sucs( R, Visitados, Acc, Res ).
+
+
