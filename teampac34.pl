@@ -1,4 +1,13 @@
-pacman34(1,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao):-
+pacman34(_,_,_,(Id,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+	alert_11((Id,PacX,PacY,PacDir,_), Enemies, 2,ListWithEnemy),
+	ListWithEnemy \== [],
+	first(ListWithEnemy, Ene),
+	sucs_11((PacX,PacY), 0, Free, Sucs),
+	setof((Valor,X,Y), X^Y^(member((_,X,Y), Sucs), casa_Value_11( Id,(X,Y),Ene, Pastilhas, MaxPastilhas, Valor)), Lista ),
+	first(Lista, (_,Xx,Yy) ),
+	viz_11(Dec,(PacX,PacY), (Xx,Yy) ).
+
+pacman34(Tic,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao):-
 	Decisao is 0.
 
 %para par
@@ -23,18 +32,114 @@ pacman34(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Past
 
 
 pacman34(_,_,_,(_,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
-	concat_11( Pastilhas, MaxPastilhas, TodasPastilhas ),	
-	Dec is 90.
+	concat_11( Pastilhas, MaxPastilhas, TodasPastilhas ),
+	calcDistAll_11((PacX,PacY),TodasPastilhas,ListDistPastilhas),
+	setof((X,Y,Z),X^Y^member((X,Y,Z), ListDistPastilhas), ListaOrdenada),
+	first(ListaOrdenada,(_,Px,Py)),
+	aStar_11((0,(PacX,PacY)),(Px,Py), Free, Solution),
+	second(Solution, (_,Xx,Yy)),
+	viz_11(Dec,(PacX,PacY),(Xx,Yy)).
+
+
 	
-	%calcDistAll_11((PacX,PacY),TodasPastilhas,ListDistPastilhas),
-	%setof((X,Y,Z),X^Y^member((X,Y,Z), ListDistPastilhas), ListaOrdenada),
-	%first(ListaOrdenada,(_,Px,Py)),
-	%aStar_11((0,(PacX,PacY)),(Px,Py), Free, Solution),
-	%second(Solution, (_,Xx,Yy)),
-	%viz_11(Dec,(PacX,PacY),(Xx,Yy)).
+
+%'Dá um valor a uma certa posição consoante estejamos no nosso ou territorio deles e se nos afastamos ou aproximamos do adversãorio.'
+%'-10 ser comido, 10 se come, 5 se tem pastilha, 20 se tem super pastilha. Contem factor distancia ao^2 para tenuação do valor'.
+%'Caso Posição seja no terreno adversario'
+%avaliaPosicao_11(3,(-1,8), (-1,8), [(-8,6),(-5,7),(-5,2),(-7,9),(-8,-9),(-7,-3),(-4,-3),(-5,4),(-5,0),(-2,-7),(-4,7),(-7,7),(-4,9),(-3,-3),(-2,9),(-1,8),(-5,-7),(-5,-6),(-5,8),(-3,9),(-3,-6),(-5,-2),(-3,-9),(-5,-9),(-1,-3),(-2,-9),(-1,-4),(-5,-1),(-6,-7),(-2,5),(-8,9),(-8,-4),(-2,-3),(-5,6),(-1,9),(-5,9),(-5,-3),(-1,-8),(-8,5),(-4,-5),(-6,-3),(-5,-4),(-1,-5),(-3,-7),(-2,-5),(-7,5),(-1,7),(-8,-8),(-7,-9),(-3,7),(-8,7),(-6,7),(-6,-9),(-6,9),(-5,-5),(-8,-3),(-1,5),(-7,-7),(-2,7),(-1,-7),(-4,-9),(-3,6),(-1,-9),(-5,3),(-5,1),(-3,-5),(-5,5),(-6,5),(-8,-7),(-3,5),(-7,-6),(-7,-5)],[(-8,-5),(-3,3)], Valor )
+avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
+	enemyField_11((Id,PosX,PosY)),
+	% 'ALterar Para Dist Real'
+	manhatan_11((PosX,PosY), Enemy, Dist),
+	comPastilha_11((PosX,PosY), Pastilhas, V),
+	comMaxPastilha_11((PosX,PosY), MaxPastilha, V2),
+	Raiz is Dist * Dist,	
+	Raiz1 is Raiz + 1,
+	Temp is -10/Raiz1,
+	Temp2 is Temp + V,
+	Valor is Temp2 + V2.
+
+casa_Value_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, V):-
+	avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ),!,
+	V is Valor.
+%'caso seja no nosso Terreno'
+avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
+	manhatan_11((PosX,PosY), Enemy, Dist),
+	Raiz is Dist * Dist,
+	Raiz2 is Raiz +1,
+	Valor is 10/Raiz2.
+
+%'se a casa tiver pastilha devolve valor 5'
+comPastilha_11(Pos, Pastilhas, V ):-
+		member(Pos, Pastilhas),
+		V is 5.
+comPastilha_11(_,_, 0).
+
+%'se a casa tiver pastilha devolve valor 5'
+comMaxPastilha_11(Pos, Pastilhas, V ):-
+		member(Pos, Pastilhas),
+		V is 10.
+comMaxPastilha_11(_,_, 0).
+
+%pacman34(9,300,0,(3,0,9,270,0),(2,8,9,270,0),[(0,-1,8,180,0),(1,-1,8,180,0)],(8,9),(-9,9),[(2,-3),(6,-5),(4,0),(8,-9),(2,7),(-4,9),(-3,-2),(1,-5),(-6,1),(-8,3),(7,6),(7,-5),(-6,-9),(0,3),(-5,2),(-5,0),(-1,7),(-4,-5),(-8,6),(-6,-3),(-5,-1),(-1,8),(-3,-9),(2,-5),(-1,-5),(-4,7),(5,7),(-1,-9),(-9,-9),(7,-4),(4,3),(6,1),(0,-4),(5,-3),(-1,-8),(-8,8),(2,2),(0,5),(-1,-3),(-6,9),(0,-5),(0,-1),(1,-7),(7,9),(-5,-7),(4,2),(8,9),(2,-1),(0,9),(-1,1),(-8,-1),(-1,9),(-2,-5),(-9,1),(6,-3),(-3,9),(0,1),(-5,7),(2,-7),(5,1),(-5,-2),(-8,5),(-7,-3),(-5,-3),(4,-2),(4,-6),(4,-9),(2,1),(4,7),(-7,1),(-1,4),(4,-3),(5,-9),(-2,-1),(2,-6),(-5,-9),(-5,4),(-6,7),(-7,-5),(6,-9),(-8,-9),(7,5),(-1,3),(-2,-9),(-3,-3),(4,6),(0,-9),(-2,5),(-1,-7),(6,9),(4,4),(0,-7),(3,7),(0,-8),(1,7),(-4,1),(4,5),(-1,5),(1,-3),(-7,5),(3,-5),(-5,3),(-8,-7),(-8,-5),(7,7),(7,1),(-6,-7),(3,9),(5,-7),(-2,-3),(-8,9),(-5,5),(1,5),(-1,-4),(8,3),(7,-3),(-7,3),(-3,3),(-3,-1),(2,5),(-3,-7),(-3,-6),(2,3),(4,-5),(-5,-5),(4,-4),(0,7),(2,-2),(8,1),(2,-9),(4,-1),(-5,-4),(-7,-9),(2,9),(-8,-3),(-7,7),(-5,6),(-5,1),(-5,-6),(-3,-5),(-2,9),(5,9),(-4,-3),(6,-1),(7,-1),(-8,-4),(6,5),(7,-7),(-3,6),(-7,9),(-2,3),(-7,-1),(-8,-8),(0,8),(-5,8),(3,-9),(-3,1),(1,3),(-1,-1),(1,9),(0,-3),(-7,-7),(-8,1),(2,0),(7,3),(-3,0),(-7,-6),(3,1),(6,3),(-3,5),(3,-3),(-9,3),(-9,-1),(6,-6),(7,-9),(-2,7),(1,-9),(7,8),(2,6),(-4,-9),(0,4),(6,-7),(-3,7),(4,8),(4,1),(8,-1),(-3,2),(4,9),(6,7),(-5,9),(-9,9),(-8,7),(7,-8),(1,-1),(4,-7),(-6,5),(5,5),(-2,-7)],[(0,-7),(0,-5),(1,-7),(0,-3),(1,-9),(4,3),(6,-6),(3,-5),(6,-3),(7,-4),(1,-5),(2,-3),(7,-8),(3,-3),(3,-9),(0,-4),(5,-7),(1,5),(5,-9),(6,-5),(0,8),(7,6),(7,-3),(7,5),(6,-9),(1,-3),(0,5),(2,-7),(2,-6),(2,-9),(0,-9),(5,-3),(7,-9),(2,-5),(6,-7),(7,-7),(0,-8)],[(7,-5),(2,3)],[(-2,-5),(-4,-5),(-1,-9),(-8,-8),(-5,3),(-6,-9),(-3,-7),(-8,-3),(-7,-9),(-1,5),(-7,-5),(-1,8),(-3,-9),(-8,-9),(-2,-3),(-7,-7),(-3,-5),(-3,-6),(-7,-3),(-6,-7),(-2,5),(-4,-3),(-1,-7),(-8,-4),(-8,-7),(-7,-6),(-2,-7),(-6,-3),(-1,-8),(-1,-4),(-4,-9),(-1,-3),(-8,6),(-2,-9),(-1,-5),(-8,5),(-3,-3)],[(-8,-5),(-3,3)],Decisao).
+%'Verifica se existe algum inimigo a uma distancia inferior a AlertDist.Return a list with enemies or empty.'
+%'MyPos = (_,_,_,_,_),como vem nos argumentos do netlogo.'
+%alert_11((3,0,9,270,0), [(0,-1,8,180,0),(1,-1,8,180,0)], 2, L  )
+%insideRadius_11( (3,0,9,270,0),[(0,-1,8,180,0),(1,-1,8,180,0)], 2, L ).
+%haveLowFear_11( [(0,-1,8,180,0),(1,-1,8,180,0)], 2, L ).
+alert_11(MyPos, EnemyPosList, AlertDist, ListWithEnemy):-
+	write('alert1'), nl,
+	insideRadius_11(MyPos,EnemyPosList, AlertDist,EnemyListClose),
+	write('alert2 '),write(EnemyListClose), nl,
+	haveLowFear_11(EnemyListClose,AlertDist, ListWithEnemy),
+	write('alert3'), nl.
 	
 	
+%'verifica se estamos no campo do inimigo. Return True ou False.'
+enemyField_11((Id,PosX,_)):-
+	Id < 2,
+	PosX > (-1).
+
+enemyField_11((Id,PosX,_)):-
+	Id > 2,
+	PosX < 0.
+
+%'verifica se algum inimigo esta a uma distancia inferior a alertDist.'
+insideRadius_11(_,[], _, []).
+insideRadius_11((_,MyX,MyY,_,_),List, AlertDist, EnemyListClose):-
+	first(List, (_,PosX,PosY,_,_)),
+	X is MyX - PosX,
+	Y is MyY - PosY,
+	X2 is X^2,
+	Y2 is Y^2,
+	Sq is X2+ Y2,
+	Res is sqrt(Sq),
+	AlertDistX is AlertDist + 1,
+	Res =< AlertDistX,
+	tail(List,R),
+	insideRadius_11((_,MyX,MyY,_,_),R, AlertDist, EnemyListCloseTemp),
+	first(List,H),
+	EnemyListClose = [H|EnemyListCloseTemp].
 	
+insideRadius_11(Pos,List, AlertDist, EnemyListClose):-
+	tail(List,R),
+	insideRadius_11(Pos,R, AlertDist, EnemyListClose2),
+	append([],EnemyListClose2, EnemyListClose).
+
+%'verifica se os inimigos estão com medo inferior a alertDist.Retorna a lista de inimigos com medo inferior a alertDist ou vazio.'
+haveLowFear_11([],_,[]).
+haveLowFear_11(EnemyList,AlertDist, Res):-
+	first(EnemyList, (_,PosX,PosY,_,M)),
+	M  < AlertDist,
+	tail(EnemyList,T),
+	haveLowFear_11( T,AlertDist, ResTemp),
+	Res = [(PosX,PosY) | ResTemp].
+	
+haveLowFear_11(EnemyList,AlertDist,Res):-
+	tail(EnemyList,T),
+	haveLowFear_11(T,AlertDist,ResTemp),
+	append([],ResTemp,Res).
+
 	
 calcDistAll_11( _, [], [] ).
 calcDistAll_11( Objectivo, [ Cur | R ], Res ):-
