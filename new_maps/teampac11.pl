@@ -1,196 +1,282 @@
-%applyHeuristic_11((1,1), [(2,3), (3,3)], [(1,3), (2,4)], R)
-% Pacman (3,5)
-% Pastilhas [ (1,1), (1,4), (1,5), (2,0), (2,1), (2,2), (2,4), (3,0), (3,1) ]
-% ' Largura Primeiro com Profundidade Primeiro -> A fazer ações simetricas de jogador oposto. par segue par, impar segue impar '
-% 'sucessores'
-sucs( Cur, Free, CurTree, Sucs ):-
-	findall( Suc , ( viz( _, Cur, Suc ), member( Suc, Free ), \+member( (_, Suc), CurTree ) ), Sucs).
+%%-- EM ALERTA %	 
+pacman11(_,_,_,(Id,PacX,PacY,PacDir,M),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+	alert_11((Id,PacX,PacY,PacDir,_), Enemies, 2,ListWithEnemy),
+	ListWithEnemy \== [],
+	first_11(ListWithEnemy, Ene),
+	sucs_11_2((PacX,PacY), 0, Free, Sucs),
+	setof((Valor,X,Y), X^Y^(member((_,X,Y), Sucs), casa_Value_11( Id,M,(X,Y),Ene, Pastilhas, MaxPastilhas, Valor)), Lista ),
+	reverse(Lista, ListaR),
+	first_11(ListaR, (_,Xx,Yy) ),
+	viz_11(Dec,(PacX,PacY), (Xx,Yy) ).
 
-% 'calcula distancia de manhatan'
-manhatan( (X1, Y1), (X2, Y2), Dist ):-
+%%-- A MIMICAR %
+%para par
+pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
+	N < 10,
+	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
+	simetrico_11(Dir, Decisao).
+pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
+	N < 10,
+	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
+	simetrico_11(Dir, Decisao).
+
+%para impar
+pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
+	N < 10,
+	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
+	simetrico_11(Dir, Decisao).
+pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
+	N < 10,
+	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
+	simetrico_11(Dir, Decisao).
+
+
+%%-- A EXPLORAR %
+pacman11(_,_,_,(Id,PacX,PacY,_,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
+	append(Pastilhas, MaxPastilhas, AllPastilhas),
+	sortByY_11( AllPastilhas, [], PastilhasOrdenadas ),
+	splitListByParity_11( Id, PastilhasOrdenadas, PacList ),
+	calcDistAll_11( (PacX, PacY), PacList, Distancias ),
+	setof( (D, (X, Y)), ( X^Y^member( (D, (X, Y)), Distancias ) ), [ (_, (X1, Y1)) | _] ),
+	aStar11( (PacX,PacY), [[1, 0, (PacX, PacY)]], (X1, Y1), Free, [], [], Dec ).
+
+
+%%-- simetrico_11 DE DIRECAO %
+simetrico_11(0,0).
+simetrico_11(180,180).
+simetrico_11(90,270).
+simetrico_11(270,90).
+
+
+%%-- ALERTA %
+alert_11(MyPos, EnemyPosList, AlertDist, ListWithEnemy):-
+	insideRadius_11(MyPos,EnemyPosList, AlertDist,EnemyListClose),
+	haveLowFear_11(EnemyListClose,AlertDist, ListWithEnemy),!.
+
+%'verifica se estamos no campo do inimigo. Return True ou False.'
+enemyField_11((Id,PosX,_)):-
+	Id < 2,
+	PosX > (-1).
+
+enemyField_11((Id,PosX,_)):-
+	Id > 2,
+	PosX < 0.
+
+%'verifica se algum inimigo esta a uma distancia inferior a alertDist.'
+insideRadius_11(_,[], _, []).
+insideRadius_11((_,MyX,MyY,_,_),List, AlertDist, EnemyListClose):-
+	first_11(List, (_,PosX,PosY,_,_)),
+	X is MyX - PosX,
+	Y is MyY - PosY,
+	X2 is X^2,
+	Y2 is Y^2,
+	Sq is X2+ Y2,
+	Res is sqrt(Sq),
+	AlertDistX is AlertDist + 1,
+	Res =< AlertDistX,
+	tail_11(List,R),
+	insideRadius_11((_,MyX,MyY,_,_),R, AlertDist, EnemyListCloseTemp),
+	first_11(List,H),
+	EnemyListClose = [H|EnemyListCloseTemp].
+	
+insideRadius_11(Pos,List, AlertDist, EnemyListClose):-
+	tail_11(List,R),
+	insideRadius_11(Pos,R, AlertDist, EnemyListClose2),
+	append([],EnemyListClose2, EnemyListClose).
+
+%'verifica se os inimigos estão com medo inferior a alertDist.Retorna a lista de inimigos com medo inferior a alertDist ou vazio.'
+haveLowFear_11([],_,[]).
+haveLowFear_11(EnemyList,AlertDist, Res):-
+	first_11(EnemyList, (_,PosX,PosY,_,M)),
+	M  < AlertDist,
+	tail_11(EnemyList,T),
+	haveLowFear_11( T,AlertDist, ResTemp),
+	Res = [(PosX,PosY) | ResTemp].
+	
+haveLowFear_11(EnemyList,AlertDist,Res):-
+	tail_11(EnemyList,T),
+	haveLowFear_11(T,AlertDist,ResTemp),
+	append([],ResTemp,Res).
+
+avaliaPosicao_11(Id,Medo,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
+	(enemyField_11((Id,PosX,PosY)); Medo > 1),
+	manhatan_11((PosX,PosY), Enemy, Dist),
+	comPastilha_11((PosX,PosY), Pastilhas, V),
+	comMaxPastilha_11((PosX,PosY), MaxPastilhas, V2),
+	Raiz is Dist * Dist,	
+	Raiz1 is Raiz + 1,
+	Temp is -10/Raiz1,
+	Temp2 is Temp + V,
+	Valor is Temp2 + V2.
+	
+%'caso seja no nosso Terreno'
+avaliaPosicao_11(_, _, (PosX,PosY), Enemy, _, _, Valor ):-
+	manhatan_11((PosX,PosY), Enemy, Dist),
+	write(Dist),nl,
+	Raiz is Dist * Dist,
+	Raiz2 is Raiz +1,
+	Valor is 10/Raiz2.
+	
+casa_Value_11(Id,M,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, V):-
+	avaliaPosicao_11(Id,M,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ),!,
+	V is Valor.
+	
+	
+%'se a casa tiver pastilha devolve valor 5'
+comPastilha_11(Pos, Pastilhas, V ):-
+		member(Pos, Pastilhas),
+		V is 5.
+comPastilha_11(_,_, 0).
+
+%'se a casa tiver pastilha devolve valor 5'
+comMaxPastilha_11(Pos, Pastilhas, V ):-
+		member(Pos, Pastilhas),
+		V is 10.
+comMaxPastilha_11(_,_, 0).
+
+first_11([],[]).	
+first_11([ H|_], H).
+tail_11([],[]).
+tail_11([_|T], T).
+
+%%-- ALGORITMO DE PROCURA DE CAMINHO OPTIMO %
+%%-- A* BASE  %
+aStar11( Me, [ [ _, _, (X, Y) | R ] | _ ], Goal, _, _, _, Sol ):-
+	manhatan_11( (X, Y), Goal, 0 ),
+	reverse( [(X, Y) | R], [ _, (PinX, PinY) | _ ]),
+	viz_11( Sol, Me, (PinX, PinY) ).
+
+%%-- GERA SUCS %
+aStar11( Me, [ [ _, C, (X, Y) | R ] | Tree ], Goal, Free, Visitados, Expandidos, Sol ):-
+	sucs_11( (X, Y), Free, Visitados, SucsList ),
+	SucsCusto is C + 1,
+	applyHeuristic_11( SucsCusto , SucsList, Goal, SucsHeuristic ),
+	filter_11( SucsHeuristic, Expandidos, SucsFiltered),
+	actualiza_expandidos_11( SucsFiltered, Expandidos, NewExpandidos ),
+	append_all_11( SucsFiltered, [ (X, Y) | R ], NewSubTree ),
+	append( NewSubTree, Tree, TTT ),
+	setof( [ Hs, Cs, (Xs, Ys) | Rs ], Cs^Xs^Ys^member( [ Hs, Cs, (Xs, Ys) | Rs ], TTT ),  NNN ),
+	append( [(X, Y)], Visitados, NewVisitados ),
+	aStar11( Me, NNN, Goal, Free, NewVisitados, NewExpandidos, Sol ).
+
+%%-- CASO ALTERNATIVO %
+aStar11( Me, _, _, Free, _, _, Dec ):-
+	findall( D, (viz_11( D, Me, (X, Y) ), member( (X, Y), Free )), L ),
+	random_member(Dec,L).
+
+%%-- ACTUALIZA EXPANDIDOS %
+actualiza_expandidos_11( [], Exp, Exp).
+actualiza_expandidos_11( [ [ H, _, (X, Y) ]|T ], Exp, Sol ):-
+	\+member( (_, (X, Y)), Exp ),
+	append( [(H, (X, Y))], Exp, NewExp ),
+	actualiza_expandidos_11( T, NewExp, Sol ).
+
+%%-- SUBSTITUI EXPANDIDOS %
+actualiza_expandidos_11( [ [ H, _, (X, Y) ]|T ], Exp, Sol ):-
+	member( (_, (X, Y)), Exp ),
+	substitui_expandidos_11( (H, (X, Y)), Exp, NewExp ),
+	actualiza_expandidos_11( T, NewExp, Sol ).
+
+substitui_expandidos_11( (H, (X, Y)), [ (He, (Xe, Ye)) | R ], Sol ):-
+	(X \= Xe ; Y \= Ye),
+	substitui_expandidos_11( (H, (X, Y)), R, Rec ),
+	Sol = [ (He, (Xe, Ye)) | Rec ].
+substitui_expandidos_11( (H, (X, Y)), [ (_, (Xe, Ye)) | R ], Sol ):-
+	X == Xe, Y == Ye,
+	Sol = [ (H, (X, Y)) | R ].
+
+%%-- APPEND ALL %
+append_all_11( [], _, [] ).
+append_all_11( [ [H, C, (X,Y)] | R ], L, Sol ):-
+	append( [H, C, (X,Y)], L, This ),
+	append_all_11( R, L, Rec ),
+	Sol = [ This | Rec].
+
+%%-- FILTRA SUCS DE ACORDO COM EXPANDIDOS %
+filter_11( [], _, [] ).
+filter_11( [ [H, C, (X, Y)] | R], Expandidos, Sol ):-
+	( \+member( (_,(X, Y)), Expandidos ) ; ( member( (Hc, (X, Y)), Expandidos ), Hc > H ) ),
+	filter_11( R, Expandidos, Rec ),
+	Sol = [ [H, C, (X, Y)] | Rec ].
+
+filter_11( [ [H, _, (X, Y)] | R], Expandidos, Sol ):-
+	member( (Hc, (X, Y)), Expandidos ), (Hc < H ; Hc == Hc),
+	filter_11( R, Expandidos, Sol ).
+
+%%-- APLICA HEURISTICA  %
+applyHeuristic_11( _, [], _, [] ).
+applyHeuristic_11( Custo, [ P| R ], Goal, Sol ):-
+	manhatan_11( P , Goal, Dist ),
+	Heuristica is Dist + Custo,
+	applyHeuristic_11( Custo, R, Goal, Rec ),
+	Sol = [ [Heuristica, Custo, P] | Rec ].
+
+%%-- SUCESSORES %
+sucs_11( Pos, Free, Visitados, R ):-
+	findall( (SucX, SucY), ( viz_11(_, Pos, (SucX, SucY)), \+member( (SucX, SucY), Visitados ), member( (SucX, SucY), Free )), R ).
+
+sucs_11_2((PosX,PosY), C, Free, Sucs):-
+	findall((Nc,(X,Y)), (viz_11(_,(PosX,PosY),(X,Y)),member((X,Y),Free),Nc is C + 1), Sucs).
+
+%%-- MANHANTAN %
+manhatan_11( (X1, Y1), (X2, Y2), Dist ):-
 	DistX is X1 - X2, abs(DistX, AbsX),
 	DistY is Y1 - Y2, abs(DistY, AbsY),
 	Dist is AbsX + AbsY.
 
-% 'calcular distancia de manhatan de n posicoes até um destino'
-calcDistAll( _, [], [] ).
-calcDistAll( Objectivo, [ Cur | R ], Res ):-
-	manhatan( Cur, Objectivo, D ),
+calcDistAll_11( _, [], [] ).
+calcDistAll_11( Objectivo, [ Cur | R ], Res ):-
+	manhatan_11( Cur, Objectivo, D ),
 	M = (D, Cur),
-	calcDistAll( Objectivo, R, Res2 ),
+	calcDistAll_11( Objectivo, R, Res2 ),
 	Res = [M | Res2].
 
-% 'SORT'
-sort_by_custo( [], Res, Res ).
-sort_by_custo( [ ( D, (X, Y) ) | R ], L, Res ):-
-		insert_ordered( ( D, (X, Y) ), L, NL ),
-		sort_by_custo( R, NL, Res ).
-% 'INSERT_AUX_DE_SORT'
-insert_ordered( (Dist, (X, Y)), [], [(Dist, (X, Y))] ).
-insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
-	( Dist < Dist2 ; Dist == Dist2 ),
-	L = [ (Dist, (X, Y)), (Dist2, (X2, Y2)) | R ].
-insert_ordered( (Dist, (X, Y)), [ (Dist2, (X2, Y2)) | R ], L ):-
-	Dist > Dist2,
-	insert_ordered( (Dist, (X, Y)), R, NL ),
-	L = [ (Dist2, (X2, Y2)) | NL ].
-
-% 'criar sub arvores'
-appendAll( [], _, Acc, Acc ).
-appendAll( [ Cur | R ], Tree, Acc, Res ):-
-	append([Cur], Tree, SubTree),
-	appendAll( R, Tree, [ SubTree | Acc ], Res ).
-
-
-%'obtem proxima direcao'
-%'caso base'
-%'caso base'
-get_dir( Id, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | _ ], _, Gums, Dec ):-
-	%write('Cucu'), nl,
-	%write(X), write(' : '), write(Y), nl,
-	X =:= ObjX, Y =:= ObjY,
-	%write(ObjX), write(' : '), write(ObjY), nl,
-	%write('encontrou pastilha'), nl,
-	reverse( [ (D, (X, Y)) | IR ], [Prev, (K, Xx, Yy) | Rev] ),
-	%write('fez reverse'), nl,
-	viz(Viz, (PacX, PacY), (Xx, Yy)),
-	%write(Xx), write(' '), write(Yy), nl,
-	%write('fez viz'), nl,
-	%write([ (D, (X, Y)) | IR ]), nl, write(Rev), nl,
-	Dec is Viz.
-	
-get_dir( 0, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ], Free, Gums, Dec ):-
-	%write('aiai'), nl,
-	sucs( (X, Y), Free, [ (D, (X, Y)) | IR ], Sucs ),
-	%write('piupiu'), nl,
-	calcDistAll(( ObjX, ObjY ),Sucs, L ),
-	%write('epaepah'), nl,
-	sort_by_custo( L, [], SortedL ),
-	%write('virgem'), nl,
-	appendAll( SortedL, [ (D, (X, Y)) | IR ], [], SubTree ), reverse( SubTree, PSubTree ),
-	append(OR,PSubTree, NL),
-	NewN is N + 1,
-	%write(NL), nl,
-	%write('extra'), nl,
-	get_dir(Id, pastilhas,NewN, (PacX, PacY), ( ObjX, ObjY ), NL, Free, Gums, Dec ).
-
-%'Pacman Id 0'
-%'Profundidade Primeiro	'
-get_dir( 1, pastilhas, N, (PacX, PacY), ( ObjX, ObjY ), [ [ (D, (X, Y)) | IR ] | OR ], Free, Gums, Dec ):-
-	%write('aiai'), nl,
-	sucs( (X, Y), Free, [ (D, (X, Y)) | IR ], Sucs ),
-	%write('piupiu'), nl,
-	calcDistAll(( ObjX, ObjY ),Sucs, L ),
-	%write('epaepah'), nl,
-	sort_by_custo( L, [], SortedL ),
-	%write('virgem'), nl,
-	appendAll( SortedL, [ (D, (X, Y)) | IR ], [], SubTree ), reverse( SubTree, PSubTree ),
-	append(PSubTree, OR, NL),
-	NewN is N + 1,
-	%write(NL), nl,
-	%write('extra'), nl,
-	get_dir(Id, pastilhas,NewN, (PacX, PacY), ( ObjX, ObjY ), NL, Free, Gums, Dec ).
-
-%pacman11(2,300,0,(0,-8,1,90,0),(1,-8,1,90,0),[(3,6,1,270,0),(2,6,1,270,0)],(-9,1),(8,1),[(-4,9),(-2,9),(0,-8),(8,1),(-8,1),(-6,5),(-8,-7),(0,5),(4,-9),(0,-5),(-5,-6),(2,-7),(-7,7),(0,-1),(-9,1),(-2,-3),(-8,6),(-1,1),(4,-4),(6,-5),(-3,-2),(0,-9),(-5,-9),(4,9),(4,-6),(2,-2),(7,9),(5,1),(2,6),(-5,-3),(8,-1),(2,-6),(-9,-1),(-3,9),(4,-1),(7,3),(-8,-1),(7,-9),(-7,-5),(-8,8),(1,-5),(4,-7),(-2,-5),(-4,-9),(5,-7),(-7,5),(6,-1),(2,-1),(5,-3),(-4,7),(-3,-5),(4,3),(0,-4),(-7,-6),(4,-5),(-6,-9),(-6,1),(-1,-1),(-4,1),(1,-3),(2,9),(0,7),(6,1),(-8,9),(4,1),(7,5),(-7,-1),(-3,5),(-3,1),(1,7),(-2,7),(1,3),(7,-3),(6,7),(-1,4),(-7,1),(0,-3),(-9,3),(-4,-5),(-5,-7),(2,-9),(4,8),(-5,6),(-2,3),(-8,5),(-7,3),(-8,-5),(1,-9),(4,5),(-5,8),(-1,-5),(-5,-4),(5,5),(-5,5),(0,9),(-1,-3),(7,-5),(-2,-9),(4,6),(-1,-9),(4,-3),(3,-9),(3,1),(-6,-7),(8,3),(5,-9),(-8,3),(5,7),(6,-7),(-5,-2),(7,7),(-1,-7),(-3,-9),(-8,-8),(-1,9),(7,-4),(2,0),(-5,-1),(-5,3),(7,6),(3,-3),(-3,-7),(6,-6),(-8,-9),(4,4),(7,1),(-4,-3),(2,-3),(-6,7),(-5,1),(-5,7),(-3,-3),(-3,-1),(1,9),(4,7),(-3,-6),(2,5),(2,7),(1,5),(7,-8),(2,-5),(7,-7),(0,4),(-7,-3),(0,3),(-6,-3),(-5,4),(-5,-5),(6,-3),(-3,0),(-1,-8),(4,-2),(-2,-1),(-1,7),(1,-1),(-8,-4),(-8,7),(0,-7),(-3,3),(-2,-7),(3,-5),(-3,6),(-7,-9),(-2,5),(2,3),(-1,3),(0,1),(2,1),(1,-7),(-5,2),(6,3),(-1,5),(3,9),(-7,9),(-3,2),(-6,9),(6,5),(2,2),(-3,7),(7,-1),(4,0),(-1,-4),(-8,-3),(-5,0),(-7,-7),(6,-9),(5,9),(3,7),(-1,8),(4,2),(0,8),(6,9),(-5,9),(7,8)],[(-8,-8),(-4,-5),(-7,-9),(-5,3),(-6,5),(-5,2),(-7,-5),(-2,-7),(-6,9),(-3,7),(-1,9),(-3,-9),(-1,5),(-5,-1),(-5,9),(-5,-4),(-4,-3),(-5,-6),(-8,7),(-2,-3),(-1,7),(-1,8),(-7,-6),(-5,6),(-5,-7),(-3,-6),(-6,-3),(-5,1),(-5,-9),(-4,7),(-8,6),(-5,8),(-2,9),(-5,0),(-5,-3),(-8,-9),(-7,-3),(-8,-7),(-1,-5),(-1,-3),(-8,-3),(-3,-7),(-5,-5),(-8,-4),(-1,-7),(-4,-9),(-6,-9),(-8,5),(-1,-9),(-7,-7),(-6,7),(-8,9),(-3,9),(-3,5),(-7,7),(-1,-4),(-1,-8),(-3,6),(-7,9),(-6,-7),(-5,-2),(-2,-5),(-2,5),(-5,7),(-7,5),(-5,4),(-2,7),(-2,-9),(-3,-3),(-3,-5),(-5,5),(-4,9)],[(-8,8),(-8,-5)],[(6,5),(7,-7),(2,-6),(7,9),(4,8),(0,-9),(2,9),(3,-3),(7,-8),(0,7),(3,7),(4,3),(4,9),(6,9),(5,-9),(0,-7),(4,7),(7,7),(1,-3),(1,5),(1,-9),(4,2),(0,8),(3,-5),(3,9),(3,-9),(4,-7),(6,7),(7,5),(4,5),(1,9),(5,5),(0,-8),(4,-2),(4,-3),(6,-9),(4,6),(4,1),(2,-3),(1,-5),(1,-7),(4,-4),(5,-7),(2,6),(4,0),(7,-9),(4,-1),(0,-3),(4,-6),(4,-9),(6,-5),(0,-5),(7,-3),(2,-9),(5,9),(1,7),(2,-7),(4,-5),(5,-3),(2,5),(0,9),(6,-3),(0,5),(7,-4),(5,7),(6,-7),(0,-4),(7,6),(2,-5),(4,4),(6,-6),(2,7)],[(7,-5),(7,8)],Decisao)
-
-%pacman(Clock, ClockLimit, Score, Me, Partner, OtherTeam, HomeBase , HisBase, FreeCells, MyP, MYSupP, HisP, HisSupP, Decisao) :-
-
-%iteracao 1
-pacman11(1,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao):-
-	Decisao is 0.
-
-%para par
-pacman11(N,_,_,(Id,PacX,PacY,PacDir,_),_,[(IdAdv,_,_,Dir,_),_],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
-	N < 15,
-	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
-	simetrico(Dir, Decisao).
-pacman11(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
-	N < 15,
-	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
-	simetrico(Dir, Decisao).
-%para impar
-pacman11(N,_,_,(Id,PacX,PacY,PacDir,_),_,[(IdAdv,_,_,Dir,_),_],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
-	N < 15,
-	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
-	simetrico(Dir, Decisao).
-pacman11(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
-	N < 15,
-	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
-	simetrico(Dir, Decisao).
-
-
-
-pacman11(_,_,_,(_,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
-	concat_11( Pastilhas, MaxPastilhas, TodasPastilhas ),
-	applyHeuristic_11( (PacX, PacY), TodasPastilhas, Enemies, ListaDistPastilhas ),
-	sort_by_custo( ListaDistPastilhas, [], [ (Dist, ( ObjX, ObjY ) ) | R ] ),
-	get_dir( _,pastilhas,0, (PacX, PacY), (ObjX, ObjY), [[ (0, (PacX, PacY)) ]], Free, Pastilhas, Dec ).
-	
-viz(0,(X,Y),(X,NY)) :-
+%%-- VIZINHO %
+viz_11(0,(X,Y),(X,NY)) :-
 	NY is Y + 1.
-viz(180,(X,Y),(X,NY)) :-
+viz_11(180,(X,Y),(X,NY)) :-
 	NY is Y - 1.
-viz(90,(X,Y),(NX,Y)) :-
+viz_11(90,(X,Y),(NX,Y)) :-
 	NX is X + 1.
-viz(270,(X,Y),(NX,Y)) :-
+viz_11(270,(X,Y),(NX,Y)) :-
 	NX is X - 1.
 
-simetrico(0,0).
-simetrico(180,180).
-simetrico(90,270).
-simetrico(270,90).
+%%-- ORDENA PARES POR YY %
+sortByY_11( [], Acc, Acc ).
+sortByY_11( [ (X, Y) | R ], Acc, Sol ):-
+	sortByY_11Aux( (X, Y), Acc, NewAcc ),
+	sortByY_11(R, NewAcc, Sol).
+
+sortByY_11Aux( (X, Y), [], [(X, Y)] ).
+sortByY_11Aux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
+	Y > Ay,
+	sortByY_11Aux( (X, Y), R, Rec ),
+	Sol = [ (Ax, Ay) | Rec ].
+sortByY_11Aux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
+	( (Y < Ay) ; ( Y == Ay )),
+	Sol = [ (X, Y), (Ax, Ay) | R ].	
 
 
-%%----------------------------------------------- Heuristic methods %
-applyHeuristic_11( Me, Goals, Enemies, Result):-
-	applyHeuristic_aux_11( Me, Goals, Goals, Enemies, Result).
+%%-- DIVIDE PASTILHAS POR PARIDADE DE AGENTE %
+splitListByParity_11( Value, L, R ):-
+	0 =:= mod(Value, 2),
+	length(L, Len),
+	Lim is Len / 2,
+	ceiling(Lim, Limit),
+	split_until_11(Limit, L, R ).
 
-applyHeuristic_aux_11( _, [], _, _, []).
-applyHeuristic_aux_11( Me, [P|R], Goals, [Enemy1, Enemy2], Result):-
-	eval_distance( Me, P, Distance_Factor ),
-	eval_vizinhanca_11( P, Goals, Nei_Factor ),
-	HeuristicValue is (( (Distance_Factor * 0.6 ) - (Nei_Factor * 0.4) ) / 2),
-	applyHeuristic_aux_11( Me, R, Goals, [Enemy1, Enemy2], Result_Rec ),
-	Result = [ ( HeuristicValue, P) | Result_Rec ].
+splitListByParity_11( Value, L, R ):-
+	1 =:= mod(Value, 2),
+	reverse( L, RevList ),
+	length(L, Len),
+	Lim is Len / 2,
+	floor(Lim, Limit),
+	split_until_11(Limit, RevList, R ).
 
+split_until_11( 0, _, [] ).
+split_until_11( _, [], [] ).
+split_until_11( Limit, [P|R], List ):-
+	NewLimit is Limit - 1,
+	split_until_11( NewLimit, R, Rec ),
+	List = [ P | Rec ].
 
-%%-------------- Avalia factor de vizinhanca %
-eval_vizinhanca_11( P, L, R ):-
-	findall( Viz, ( viz(_, P, Viz), member( Viz, L ) ), List ),
-	length(List, R).
-
-%%-------------- Avalia factor de perigo %
-eval_danger( Pos1, Pos2, Res ):-
-	manhatan( Pos1, Pos2, Calc ),
-	parse_danger_value(Calc, Res).
-
-%interpreta o valor de perigo
-parse_danger_value(Val, -1):-
-	Val >= 2.
-parse_danger_value(Val, 20):-
-	Val < 2.
-
-%%-------------- Avalia factor de distancia %
-eval_distance( Pos1, Pos2, Res):-
-	manhatan(Pos1, Pos2, Res).
-
-
-
-%%----------------------------------------------- Aux Methods %
-%concatena duas listas	
-concat_11(L1, L2, Res):-
-	append(L1, L2, Res).
-
-%calcula distancia de manhatan
-manhatan( (X1, Y1), (X2, Y2), Dist ):-
-	DistX is X1 - X2, abs(DistX, AbsX),
-	DistY is Y1 - Y2, abs(DistY, AbsY),
-	Dist is AbsX + AbsY.
-
-
-
-
-
-
-'Pastilhas'
-%[(-8,6),(-5,7),(-5,2),(-7,9),(-8,-9),(-7,-3),(-4,-3),(-5,4),(-5,0),(-2,-7),(-4,7),(-7,7),(-4,9),(-3,-3),(-2,9),(-1,8),(-5,-7),(-5,-6),(-5,8),(-3,9),(-3,-6),(-5,-2),(-3,-9),(-5,-9),(-1,-3),(-2,-9),(-1,-4),(-5,-1),(-6,-7),(-2,5),(-8,9),(-8,-4),(-2,-3),(-5,6),(-1,9),(-5,9),(-5,-3),(-1,-8),(-8,5),(-4,-5),(-6,-3),(-5,-4),(-1,-5),(-3,-7),(-2,-5),(-7,5),(-1,7),(-8,-8),(-7,-9),(-3,7),(-8,7),(-6,7),(-6,-9),(-6,9),(-5,-5),(-8,-3),(-1,5),(-7,-7),(-2,7),(-1,-7),(-4,-9),(-3,6),(-1,-9),(-5,3),(-5,1),(-3,-5),(-5,5),(-6,5),(-8,-7),(-3,5),(-7,-6),(-7,-5)]

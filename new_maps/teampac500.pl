@@ -1,5 +1,5 @@
 %%-- EM ALERTA %	 
-pacman11(_,_,_,(Id,PacX,PacY,PacDir,M),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+pacman500(_,_,_,(Id,PacX,PacY,PacDir,M),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
 	write('primeira Func '),
 	alert_11((Id,PacX,PacY,PacDir,_), Enemies, 2,ListWithEnemy),
 	ListWithEnemy \== [],
@@ -15,28 +15,28 @@ pacman11(_,_,_,(Id,PacX,PacY,PacDir,M),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPasti
 
 %%-- A MIMICAR %
 %para par
-pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
+pacman500(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
 	simetrico(Dir, Decisao).
-pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
+pacman500(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
 	simetrico(Dir, Decisao).
 
 %para impar
-pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
+pacman500(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
 	simetrico(Dir, Decisao).
-pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
+pacman500(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
 	simetrico(Dir, Decisao).
 
 
 %%-- A EXPLORAR %
-pacman11(_,_,_,(Id,PacX,PacY,_,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
+pacman500(_,_,_,(Id,PacX,PacY,_,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
 	append(Pastilhas, MaxPastilhas, AllPastilhas),
 	sortByY( AllPastilhas, [], PastilhasOrdenadas ),
 	write('Pastilhas Ordenadas'), nl,
