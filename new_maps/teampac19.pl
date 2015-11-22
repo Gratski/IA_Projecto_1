@@ -1,15 +1,32 @@
-%split_List_By_Parity( Value, L, R ):-
-%	0 =:= mod(Value, 2),
-	%faz bottom.
+split_List_By_Parity( Value, L, R ):-
+	0 =:= mod(Value, 2),
+	length(L, Len),
+	Lim is Len / 2,
+	ceiling(Lim, Limit),
+	split_until(Limit, L, R ).
 
-%split_List_By_Parity( Value, L, R ):-
-%	1 =:= mod(Value, 2),
-	%faz top.
+split_List_By_Parity( Value, L, R ):-
+	1 =:= mod(Value, 2),
+	reverse( L, RevList ),
+	length(L, Len),
+	Lim is Len / 2,
+	floor(Lim, Limit),
+	split_until(Limit, RevList, R ).
+
+split_until( 0, _, [] ).
+split_until( _, [], [] ).
+split_until( Limit, [P|R], List ):-
+	NewLimit is Limit - 1,
+	split_until( NewLimit, R, Rec ),
+	List = [ P | Rec ].
+
 
 %%-- PACMAN %
 pacman19(Id,_,_,(_,PacX,PacY,PacDir,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
 	concat_11(Pastilhas, MaxPastilhas, AllPastilhas),
-	calcDistAll( (PacX, PacY), AllPastilhas, Distancias ),
+	%setof( (PastX, PastY), PastX^ )
+	split_List_By_Parity( Id, AllPastilhas, PacList ),
+	calcDistAll( (PacX, PacY), PacList, Distancias ),
 	setof( (D, (X, Y)), ( X^Y^member( (D, (X, Y)), Distancias ) ), [ (D1, (X1, Y1)) | RorderdDistancias] ),
 	my_include(D1, [ (D1, (X1, Y1)) | RorderdDistancias], PTargets),
 	devolve_n_primeiros( 3, PTargets, Targets ),
