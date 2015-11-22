@@ -5,10 +5,7 @@
 alerta_11(MyPos, EnemyPosList, AlertDist, ListWithEnemy):-
 	enemyField_11(MyPos),
 	insideRadius_11(MyPos,EnemyPosList, AlertDist,EnemyListClose),
-	haveLowFear_11(EnemyListClose,AlertDist, ListWithEnemy),
-	
-	
-
+	haveLowFear_11(EnemyListClose,AlertDist, ListWithEnemy),	
 	
 %'verifica se estamos no campo do inimigo. Return True ou False.'
 enemyField_11((Id,PosX,_,_,_)):-
