@@ -1,43 +1,53 @@
-% pacman500(1,300,0,(1,-9,9,90,0),(0,-8,9,90,0),[(3,7,9,270,0),(2,8,9,270,0)],(-9,9),(8,9),[(4,-7),(5,-7),(1,-3),(4,7),(-7,-1),(7,-5),(-1,-1),(5,7),(0,8),(-1,9),(8,1),(4,5),(-5,8),(-5,9),(-3,-3),(-4,7),(8,3),(-8,1),(-9,1),(-6,-3),(6,-9),(7,7),(-1,-4),(-2,9),(-7,-9),(-6,5),(-1,8),(7,1),(-9,-1),(-6,-7),(-8,-5),(-5,-9),(1,-1),(4,2),(2,-7),(0,-1),(-8,-4),(-2,-7),(3,-9),(-7,9),(-3,3),(5,1),(0,7),(-3,1),(-7,-7),(7,-7),(-3,-5),(7,9),(-3,-9),(-8,7),(5,9),(-8,9),(-3,6),(7,-4),(2,-6),(-5,7),(-3,-1),(4,-1),(-1,3),(0,3),(1,3),(2,6),(0,4),(2,-3),(-7,-3),(4,1),(2,2),(-2,-9),(0,1),(7,6),(2,-2),(-4,-3),(1,7),(-5,-5),(-7,7),(-5,-1),(-3,-7),(-6,7),(-7,-5),(5,5),(-8,5),(-5,-3),(-1,1),(6,-1),(-6,1),(4,9),(1,-9),(-9,9),(-3,2),(6,-5),(-5,0),(-4,9),(-1,-7),(2,0),(2,-9),(3,9),(2,7),(0,-8),(3,7),(5,-3),(4,-6),(7,-8),(1,-7),(3,-5),(0,-3),(4,-5),(-1,-5),(-3,5),(-8,-1),(0,5),(-3,7),(1,5),(2,1),(1,9),(2,-1),(5,-9),(6,5),(6,-3),(-4,-5),(-5,-6),(4,3),(-8,-3),(6,-7),(0,-7),(-1,5),(-1,-9),(-7,5),(0,-4),(-1,7),(8,-9),(-5,5),(-3,-6),(3,-3),(-1,-3),(7,8),(8,9),(-1,4),(6,1),(-8,-7),(-5,2),(6,-6),(4,8),(-5,-4),(1,-5),(4,-9),(-2,-1),(-2,-3),(-2,5),(-5,6),(-8,-8),(-2,7),(6,9),(-2,-5),(-2,3),(-8,8),(7,-9),(0,-9),(4,-3),(-9,3),(4,6),(2,3),(7,5),(-7,1),(8,-1),(-3,9),(4,4),(3,1),(-8,-9),(-6,-9),(-5,3),(-6,9),(-3,0),(4,0),(-4,1),(6,7),(-7,-6),(2,-5),(-8,3),(-8,6),(4,-2),(4,-4),(0,9),(2,9),(7,3),(7,-1),(-5,4),(-4,-9),(-9,-9),(-3,-2),(-5,-7),(7,-3),(2,5),(6,3),(-1,-8),(-5,1),(-5,-2),(0,-5),(-7,3)],[(-8,5),(-2,-3),(-1,5),(-3,-3),(-8,-7),(-1,8),(-2,5),(-1,-5),(-8,-4),(-4,-3),(-2,-5),(-4,-9),(-6,-9),(-2,-9),(-8,6),(-3,-6),(-7,-5),(-8,-3),(-8,-9),(-1,-3),(-4,-5),(-8,-8),(-5,3),(-7,-9),(-6,-7),(-2,-7),(-7,-7),(-1,-4),(-1,-7),(-3,-7),(-7,-6),(-1,-9),(-3,-5),(-3,-9),(-7,-3),(-6,-3),(-1,-8)],[(-3,3),(-8,-5)],[(2,-3),(3,-5),(5,-7),(6,-3),(0,-8),(1,-3),(0,-4),(5,-3),(6,-5),(6,-9),(3,-9),(0,-9),(1,-9),(6,-6),(0,-3),(7,5),(4,3),(7,-3),(6,-7),(0,-7),(7,-7),(7,-8),(1,5),(7,-9),(2,-5),(2,-9),(7,-4),(1,-5),(3,-3),(2,-7),(1,-7),(0,-5),(0,8),(5,-9),(0,5),(7,6),(2,-6)],[(7,-5),(2,3)],Decisao)
-% LAB 1 pacman500(1,300,0,(2,-9,1,90,0),(0,-9,1,90,0),[(3,8,1,270,0),(2,7,1,270,0)],(-9,1),(8,1),[(-3,3),(-9,-1),(-7,-7),(-1,9),(0,-7),(-8,1),(-7,-9),(-2,-5),(-5,8),(7,6),(-8,5),(2,6),(6,-3),(3,-5),(-1,-1),(7,-7),(-4,-5),(-8,-9),(-9,1),(-9,3),(8,3),(-7,-3),(4,6),(-5,6),(-1,3),(-1,-3),(-8,8),(-5,0),(4,-2),(-1,-4),(-8,-8),(-5,2),(1,3),(-7,5),(-5,-7),(-5,-4),(4,0),(7,3),(0,1),(-8,-4),(-3,2),(-6,7),(2,-7),(-7,-5),(3,1),(6,-7),(7,-1),(-2,3),(0,-5),(4,-4),(-5,-3),(1,-5),(4,3),(2,3),(-1,1),(6,-1),(-6,-3),(0,-4),(-1,5),(4,9),(0,7),(2,7),(-4,1),(4,-1),(-2,9),(-7,3),(-7,-1),(-8,9),(2,-3),(5,7),(7,8),(7,1),(2,1),(-6,5),(6,-5),(-1,-8),(-8,3),(-3,0),(2,-5),(3,-3),(-4,-9),(0,-1),(-7,-6),(-2,-3),(6,7),(-7,7),(2,-6),(0,3),(-5,1),(0,8),(2,9),(-3,-5),(-6,1),(1,5),(-7,9),(-5,-5),(7,9),(0,5),(3,7),(4,8),(4,2),(6,-6),(0,4),(8,-1),(0,-8),(-5,7),(-3,6),(-8,-7),(5,9),(6,-9),(-1,8),(7,5),(7,-5),(5,-7),(4,5),(7,7),(-5,-9),(1,9),(-6,9),(5,5),(-3,-2),(0,-9),(2,0),(-3,7),(-3,-6),(-2,-1),(-5,4),(-8,-1),(-5,5),(-1,7),(1,-9),(-2,5),(1,-3),(-2,7),(4,7),(7,-8),(1,-7),(-8,7),(-3,-3),(5,-3),(2,-1),(-3,-7),(-5,-2),(-2,-9),(7,-3),(6,3),(0,-3),(-1,4),(-5,-6),(-7,1),(7,-9),(-3,1),(-8,6),(-5,9),(-3,-1),(-1,-7),(3,9),(-5,-1),(-8,-5),(2,2),(-3,-9),(6,5),(3,-9),(1,-1),(-4,-3),(5,-9),(-8,-3),(-6,-9),(4,-3),(6,1),(8,1),(5,1),(7,-4),(-4,9),(-3,5),(1,7),(6,9),(-6,-7),(4,-5),(4,4),(0,9),(4,-7),(2,-9),(-1,-9),(4,-9),(2,5),(4,-6),(-3,9),(2,-2),(-4,7),(-1,-5),(4,1),(-2,-7),(-5,3)],[(-6,-7),(-7,5),(-5,2),(-3,-9),(-7,-6),(-2,-5),(-8,-3),(-7,-7),(-4,9),(-8,9),(-6,-9),(-5,-9),(-8,-9),(-7,-3),(-5,7),(-4,7),(-6,5),(-7,9),(-3,7),(-6,7),(-8,6),(-5,-1),(-5,9),(-8,-4),(-5,6),(-4,-9),(-8,-7),(-2,-7),(-5,-2),(-8,-8),(-2,9),(-5,4),(-3,9),(-4,-3),(-3,6),(-2,-3),(-8,7),(-4,-5),(-7,-9),(-3,-3),(-7,7),(-3,5),(-5,-5),(-8,5),(-1,-7),(-5,-6),(-3,-7),(-6,9),(-1,-5),(-2,7),(-1,5),(-1,-8),(-1,-3),(-5,5),(-2,5),(-2,-9),(-1,8),(-5,-7),(-1,-9),(-1,7),(-3,-5),(-1,9),(-7,-5),(-3,-6),(-5,8),(-5,1),(-5,-3),(-6,-3),(-5,0),(-5,-4),(-5,3),(-1,-4)],[(-8,-5),(-8,8)],[(4,-2),(6,-3),(6,5),(7,-9),(4,-7),(7,5),(5,7),(7,9),(2,-5),(4,3),(6,-6),(0,-4),(0,-5),(1,7),(4,7),(5,-3),(0,9),(0,5),(0,8),(4,8),(4,2),(4,4),(6,-7),(3,-3),(5,-9),(4,-3),(1,-5),(7,7),(4,9),(2,-7),(0,-9),(0,-3),(4,-1),(4,6),(2,-9),(6,-5),(7,6),(6,-9),(3,9),(3,-9),(1,5),(2,6),(1,-3),(5,9),(2,7),(0,-8),(4,-9),(7,-4),(4,-4),(1,-9),(5,5),(7,-7),(4,1),(2,-3),(7,-3),(4,0),(1,9),(7,-8),(4,-6),(2,5),(1,-7),(0,-7),(2,9),(3,7),(6,9),(2,-6),(0,7),(4,-5),(3,-5),(4,5),(6,7),(5,-7)],[(7,-5),(7,8)],Decisao).
-
-
 %%-- EM ALERTA %	 
-pacman500(_,_,_,(Id,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
+pacman11(_,_,_,(Id,PacX,PacY,PacDir,M),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec) :-
 	write('primeira Func '),
 	alert_11((Id,PacX,PacY,PacDir,_), Enemies, 2,ListWithEnemy),
 	ListWithEnemy \== [],
 	write('Alerta ativado '),write(ListWithEnemy), nl,
 	first(ListWithEnemy, Ene),
 	sucs_11_2((PacX,PacY), 0, Free, Sucs),
-	setof((Valor,X,Y), X^Y^(member((_,X,Y), Sucs), casa_Value_11( Id,(X,Y),Ene, Pastilhas, MaxPastilhas, Valor)), Lista ),
+	setof((Valor,X,Y), X^Y^(member((_,X,Y), Sucs), casa_Value_11( Id,M,(X,Y),Ene, Pastilhas, MaxPastilhas, Valor)), Lista ),
 	write('Lista (valor Suc)'), write(Lista), nl,
 	reverse(Lista, ListaR),
 	first(ListaR, (_,Xx,Yy) ),
 	write('Viz:'), write(PacX), write(PacY), write(','), write(Xx), write(Yy), nl,
 	viz_11(Dec,(PacX,PacY), (Xx,Yy) ).
 
-%%-- %
+%%-- A MIMICAR %
 %para par
-pacman500(N,_,_,(Id,PacX,PacY,PacDir,_),_,[(IdAdv,_,_,Dir,_),_],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
+pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
 	simetrico(Dir, Decisao).
-pacman500(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
+pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 0, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 0,
 	simetrico(Dir, Decisao).
 
 %para impar
-pacman500(N,_,_,(Id,PacX,PacY,PacDir,_),_,[(IdAdv,_,_,Dir,_),_],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
+pacman11(N,_,_,(Id,_,_,_,_),_,[(IdAdv,_,_,Dir,_),_],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
 	simetrico(Dir, Decisao).
-pacman500(N,_,_,(Id,PacX,PacY,PacDir,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,Free,_,_,Pastilhas,MaxPastilhas,Decisao) :-
+pacman11(N,_,_,(Id,_,_,_,_),_,[_,(IdAdv,_,_,Dir,_)],_,_,_,_,_,_,_,Decisao) :-
 	N < 10,
 	MyIdMod is mod(Id, 2), MyIdMod == 1, AdvIdMod is mod(IdAdv, 2), AdvIdMod == 1,
 	simetrico(Dir, Decisao).
 
+
+%%-- A EXPLORAR %
+pacman11(_,_,_,(Id,PacX,PacY,_,_),_,_,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
+	append(Pastilhas, MaxPastilhas, AllPastilhas),
+	sortByY( AllPastilhas, [], PastilhasOrdenadas ),
+	write('Pastilhas Ordenadas'), nl,
+	write(PastilhasOrdenadas), nl,
+	splitListByParity( Id, PastilhasOrdenadas, PacList ),
+	calcDistAll( (PacX, PacY), PacList, Distancias ),
+	setof( (D, (X, Y)), ( X^Y^member( (D, (X, Y)), Distancias ) ), [ (_, (X1, Y1)) | _] ),
+	aStar11( (PacX,PacY), [[1, 0, (PacX, PacY)]], (X1, Y1), Free, [], [], Dec ).
+
+
+%%-- SIMETRICO DE DIRECAO %
 simetrico(0,0).
 simetrico(180,180).
 simetrico(90,270).
@@ -96,8 +106,8 @@ haveLowFear_11(EnemyList,AlertDist,Res):-
 	haveLowFear_11(T,AlertDist,ResTemp),
 	append([],ResTemp,Res).
 
-avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
-	enemyField_11((Id,PosX,PosY)),
+avaliaPosicao_11(Id,Medo,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
+	(enemyField_11((Id,PosX,PosY)); Medo > 1),
 	% 'ALterar Para Dist Real'
 	manhatan_11((PosX,PosY), Enemy, Dist),
 	write('distE= '),write(Dist),nl,
@@ -115,15 +125,15 @@ avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
 	write('Valor: '), write(Valor), nl.
 	
 %'caso seja no nosso Terreno'
-avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ):-
+avaliaPosicao_11(_, _, (PosX,PosY), Enemy, _, _, Valor ):-
 	manhatan_11((PosX,PosY), Enemy, Dist),
 	write(Dist),nl,
 	Raiz is Dist * Dist,
 	Raiz2 is Raiz +1,
 	Valor is 10/Raiz2.
 	
-casa_Value_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, V):-
-	avaliaPosicao_11(Id,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ),!,
+casa_Value_11(Id,M,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, V):-
+	avaliaPosicao_11(Id,M,(PosX,PosY), Enemy, Pastilhas, MaxPastilhas, Valor ),!,
 	V is Valor.
 	
 	
@@ -143,22 +153,11 @@ comMaxPastilha_11(_,_, 0).
 
 first([],[]).	
 first([ H|_], H).
-second([F,S|_], S).
+second([_,S|_], S).
 tail([],[]).
 tail([_|T], T).
 soma(X,Y, Sum):-
 	Sum is X + Y.
-
-%%-- A EXPLORAR %
-pacman500(_,_,_,(Id,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPastilhas,Dec):-
-		append(Pastilhas, MaxPastilhas, AllPastilhas),
-		sort_by_y( AllPastilhas, [], PastilhasOrdenadas ),
-		write('Pastilhas Ordenadas'), nl,
-		write(PastilhasOrdenadas), nl,
-		split_List_By_Parity( Id, PastilhasOrdenadas, PacList ),
-		calcDistAll( (PacX, PacY), PacList, Distancias ),
-		setof( (D, (X, Y)), ( X^Y^member( (D, (X, Y)), Distancias ) ), [ (D1, (X1, Y1)) | RorderdDistancias] ),
-		aStar_11( (PacX,PacY), [[1, 0, (PacX, PacY)]], (X1, Y1), Free, [], [], Dec ).
 
 
 
@@ -166,14 +165,14 @@ pacman500(_,_,_,(Id,PacX,PacY,PacDir,_),_,Enemies,_,_,Free,_,_,Pastilhas,MaxPast
 
 %%-- FUNCAO ALERTA %
 alerta( _, [], [] ).
-alerta( Me, [ (Id,Ex,Ey,PacDir,_) | R ], Res ):-
+alerta( Me, [ (_,Ex,Ey,_,_) | R ], Res ):-
 	manhatan_11( Me, (Ex, Ey), D ),
 	write('EU: '), write(Me), nl,
 	write('Enemy: '), write((Ex, Ey)), nl, 
 	D < 3,
 	alerta( Me, R, Rec ),
 	Res = [ (Ex, Ey) | Rec ].
-alerta( Me, [ (Id,Ex,Ey,PacDir,_) | R ], Res ):-
+alerta( Me, [ (_,Ex,Ey,_,_) | R ], Res ):-
 	write('EU: '), write(Me), nl,
 	write('Enemy: '), write((Ex, Ey)), nl, 
 	manhatan_11( Me, (Ex, Ey), D ),
@@ -181,9 +180,9 @@ alerta( Me, [ (Id,Ex,Ey,PacDir,_) | R ], Res ):-
 	alerta( Me, R, Res ).
 
 %%-- A* BASE  %
-%aStar_11((-9,1), [ [7, 0, (-9,1)] ] , (7,-9), [(-4,9),(-2,9),(0,-8),(8,1),(-8,1),(-6,5),(-8,-7),(0,5),(4,-9),(0,-5),(-5,-6),(2,-7),(-7,7),(0,-1),(-9,1),(-2,-3),(-8,6),(-1,1),(4,-4),(6,-5),(-3,-2),(0,-9),(-5,-9),(4,9),(4,-6),(2,-2),(7,9),(5,1),(2,6),(-5,-3),(8,-1),(2,-6),(-9,-1),(-3,9),(4,-1),(7,3),(-8,-1),(7,-9),(-7,-5),(-8,8),(1,-5),(4,-7),(-2,-5),(-4,-9),(5,-7),(-7,5),(6,-1),(2,-1),(5,-3),(-4,7),(-3,-5),(4,3),(0,-4),(-7,-6),(4,-5),(-6,-9),(-6,1),(-1,-1),(-4,1),(1,-3),(2,9),(0,7),(6,1),(-8,9),(4,1),(7,5),(-7,-1),(-3,5),(-3,1),(1,7),(-2,7),(1,3),(7,-3),(6,7),(-1,4),(-7,1),(0,-3),(-9,3),(-4,-5),(-5,-7),(2,-9),(4,8),(-5,6),(-2,3),(-8,5),(-7,3),(-8,-5),(1,-9),(4,5),(-5,8),(-1,-5),(-5,-4),(5,5),(-5,5),(0,9),(-1,-3),(7,-5),(-2,-9),(4,6),(-1,-9),(4,-3),(3,-9),(3,1),(-6,-7),(8,3),(5,-9),(-8,3),(5,7),(6,-7),(-5,-2),(7,7),(-1,-7),(-3,-9),(-8,-8),(-1,9),(7,-4),(2,0),(-5,-1),(-5,3),(7,6),(3,-3),(-3,-7),(6,-6),(-8,-9),(4,4),(7,1),(-4,-3),(2,-3),(-6,7),(-5,1),(-5,7),(-3,-3),(-3,-1),(1,9),(4,7),(-3,-6),(2,5),(2,7),(1,5),(7,-8),(2,-5),(7,-7),(0,4),(-7,-3),(0,3),(-6,-3),(-5,4),(-5,-5),(6,-3),(-3,0),(-1,-8),(4,-2),(-2,-1),(-1,7),(1,-1),(-8,-4),(-8,7),(0,-7),(-3,3),(-2,-7),(3,-5),(-3,6),(-7,-9),(-2,5),(2,3),(-1,3),(0,1),(2,1),(1,-7),(-5,2),(6,3),(-1,5),(3,9),(-7,9),(-3,2),(-6,9),(6,5),(2,2),(-3,7),(7,-1),(4,0),(-1,-4),(-8,-3),(-5,0),(-7,-7),(6,-9),(5,9),(3,7),(-1,8),(4,2),(0,8),(6,9),(-5,9),(7,8)], [], [], Sol).
+%aStar11((-9,1), [ [7, 0, (-9,1)] ] , (7,-9), [(-4,9),(-2,9),(0,-8),(8,1),(-8,1),(-6,5),(-8,-7),(0,5),(4,-9),(0,-5),(-5,-6),(2,-7),(-7,7),(0,-1),(-9,1),(-2,-3),(-8,6),(-1,1),(4,-4),(6,-5),(-3,-2),(0,-9),(-5,-9),(4,9),(4,-6),(2,-2),(7,9),(5,1),(2,6),(-5,-3),(8,-1),(2,-6),(-9,-1),(-3,9),(4,-1),(7,3),(-8,-1),(7,-9),(-7,-5),(-8,8),(1,-5),(4,-7),(-2,-5),(-4,-9),(5,-7),(-7,5),(6,-1),(2,-1),(5,-3),(-4,7),(-3,-5),(4,3),(0,-4),(-7,-6),(4,-5),(-6,-9),(-6,1),(-1,-1),(-4,1),(1,-3),(2,9),(0,7),(6,1),(-8,9),(4,1),(7,5),(-7,-1),(-3,5),(-3,1),(1,7),(-2,7),(1,3),(7,-3),(6,7),(-1,4),(-7,1),(0,-3),(-9,3),(-4,-5),(-5,-7),(2,-9),(4,8),(-5,6),(-2,3),(-8,5),(-7,3),(-8,-5),(1,-9),(4,5),(-5,8),(-1,-5),(-5,-4),(5,5),(-5,5),(0,9),(-1,-3),(7,-5),(-2,-9),(4,6),(-1,-9),(4,-3),(3,-9),(3,1),(-6,-7),(8,3),(5,-9),(-8,3),(5,7),(6,-7),(-5,-2),(7,7),(-1,-7),(-3,-9),(-8,-8),(-1,9),(7,-4),(2,0),(-5,-1),(-5,3),(7,6),(3,-3),(-3,-7),(6,-6),(-8,-9),(4,4),(7,1),(-4,-3),(2,-3),(-6,7),(-5,1),(-5,7),(-3,-3),(-3,-1),(1,9),(4,7),(-3,-6),(2,5),(2,7),(1,5),(7,-8),(2,-5),(7,-7),(0,4),(-7,-3),(0,3),(-6,-3),(-5,4),(-5,-5),(6,-3),(-3,0),(-1,-8),(4,-2),(-2,-1),(-1,7),(1,-1),(-8,-4),(-8,7),(0,-7),(-3,3),(-2,-7),(3,-5),(-3,6),(-7,-9),(-2,5),(2,3),(-1,3),(0,1),(2,1),(1,-7),(-5,2),(6,3),(-1,5),(3,9),(-7,9),(-3,2),(-6,9),(6,5),(2,2),(-3,7),(7,-1),(4,0),(-1,-4),(-8,-3),(-5,0),(-7,-7),(6,-9),(5,9),(3,7),(-1,8),(4,2),(0,8),(6,9),(-5,9),(7,8)], [], [], Sol).
 
-aStar_11( Me, [ [ _, C, (X, Y) | R ] | _ ], Goal, _, _, _, Sol ):-
+aStar11( Me, [ [ _, C, (X, Y) | R ] | _ ], Goal, _, _, _, Sol ):-
 	manhatan_11( (X, Y), Goal, 0 ),
 	reverse( [(X, Y) | R], [ EE, (PinX, PinY) | REV ]),
 	write('Custo'), nl,
@@ -192,7 +191,7 @@ aStar_11( Me, [ [ _, C, (X, Y) | R ] | _ ], Goal, _, _, _, Sol ):-
 	write([ EE, (PinX, PinY) | REV ]), nl,
 	viz_11( Sol, Me, (PinX, PinY) ).
 
-aStar_11( Me, [ [ H, C, (X, Y) | R ] | Tree ], Goal, Free, Visitados, Expandidos, Sol ):-
+aStar11( Me, [ [ _, C, (X, Y) | R ] | Tree ], Goal, Free, Visitados, Expandidos, Sol ):-
 
 	%write('Reecebeu, Lista Ordenada'), nl,
 	%write([ [H, C, (X, Y) | R] | HeadTT]), nl,
@@ -235,9 +234,9 @@ aStar_11( Me, [ [ H, C, (X, Y) | R ] | Tree ], Goal, Free, Visitados, Expandidos
 	write('Nova Tree'), nl,
 	write( NNN ), nl,
 
-	aStar_11( Me, NNN, Goal, Free, NewVisitados, Expandidos, Sol ).
+	aStar11( Me, NNN, Goal, Free, NewVisitados, NewExpandidos, Sol ).
 
-aStar_11( _, _, _, _, _, _, 90 ).
+aStar11( _, _, _, _, _, _, 90 ).
 
 %%-- ACTUALIZA EXPANDIDOS %
 actualiza_expandidos( [], Exp, Exp).
@@ -248,7 +247,7 @@ actualiza_expandidos( [ [ H, _, (X, Y) ]|T ], Exp, Sol ):-
 
 %%-- SUBSTITUI EXPANDIDOS %
 actualiza_expandidos( [ [ H, _, (X, Y) ]|T ], Exp, Sol ):-
-	member( (Hexp, (X, Y)), Exp ),
+	member( (_, (X, Y)), Exp ),
 	substitui_expandidos( (H, (X, Y)), Exp, NewExp ),
 	actualiza_expandidos( T, NewExp, Sol ).
 
@@ -256,7 +255,7 @@ substitui_expandidos( (H, (X, Y)), [ (He, (Xe, Ye)) | R ], Sol ):-
 	(X \= Xe ; Y \= Ye),
 	substitui_expandidos( (H, (X, Y)), R, Rec ),
 	Sol = [ (He, (Xe, Ye)) | Rec ].
-substitui_expandidos( (H, (X, Y)), [ (He, (Xe, Ye)) | R ], Sol ):-
+substitui_expandidos( (H, (X, Y)), [ (_, (Xe, Ye)) | R ], Sol ):-
 	X == Xe, Y == Ye,
 	Sol = [ (H, (X, Y)) | R ].
 
@@ -274,7 +273,7 @@ filter_11( [ [H, C, (X, Y)] | R], Expandidos, Sol ):-
 	filter_11( R, Expandidos, Rec ),
 	Sol = [ [H, C, (X, Y)] | Rec ].
 
-filter_11( [ [H, C, (X, Y)] | R], Expandidos, Sol ):-
+filter_11( [ [H, _, (X, Y)] | R], Expandidos, Sol ):-
 	member( (Hc, (X, Y)), Expandidos ), (Hc < H ; Hc == Hc),
 	filter_11( R, Expandidos, Sol ).
 
@@ -317,30 +316,30 @@ viz_11(270,(X,Y),(NX,Y)) :-
 	NX is X - 1.
 
 %%-- ORDENA PARES POR YY %
-sort_by_y( [], Acc, Acc ).
-sort_by_y( [ (X, Y) | R ], Acc, Sol ):-
-	sort_by_y_aux( (X, Y), Acc, NewAcc ),
-	sort_by_y(R, NewAcc, Sol).
+sortByY( [], Acc, Acc ).
+sortByY( [ (X, Y) | R ], Acc, Sol ):-
+	sortByYAux( (X, Y), Acc, NewAcc ),
+	sortByY(R, NewAcc, Sol).
 
-sort_by_y_aux( (X, Y), [], [(X, Y)] ).
-sort_by_y_aux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
+sortByYAux( (X, Y), [], [(X, Y)] ).
+sortByYAux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
 	Y > Ay,
-	sort_by_y_aux( (X, Y), R, Rec ),
+	sortByYAux( (X, Y), R, Rec ),
 	Sol = [ (Ax, Ay) | Rec ].
-sort_by_y_aux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
+sortByYAux( (X, Y), [ (Ax, Ay) | R ], Sol ):-
 	( (Y < Ay) ; ( Y == Ay )),
 	Sol = [ (X, Y), (Ax, Ay) | R ].	
 
 
 %%-- DIVIDE PASTILHAS POR PARIDADE DE AGENTE %
-split_List_By_Parity( Value, L, R ):-
+splitListByParity( Value, L, R ):-
 	0 =:= mod(Value, 2),
 	length(L, Len),
 	Lim is Len / 2,
 	ceiling(Lim, Limit),
 	split_until(Limit, L, R ).
 
-split_List_By_Parity( Value, L, R ):-
+splitListByParity( Value, L, R ):-
 	1 =:= mod(Value, 2),
 	reverse( L, RevList ),
 	length(L, Len),
